@@ -1,0 +1,481 @@
+/* Inicio de sesión */
+body{
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+.container-fluid {
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.container-fluid a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.container-fluid a:hover {
+    text-decoration: underline;
+}
+.image-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px; /* Ajusta este valor para controlar la distancia entre la barra y la imagen */
+}
+
+.image-container img {
+    max-width: 500px;
+    height: auto;
+  }
+.login-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+input[type=text], input[type=password], input[type=email], input[type=tel], textarea{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+  
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+  
+button:hover {
+    background-color: #45a049;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: 8px;
+    font-size: 15px
+}
+
+.forgot-password a {
+    color: red;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+/* Registro de Médico */
+.register-container-fluid{
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box; /* Agrega esta línea para corregir desbordes*/
+}
+.register-container-fluid a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+.register-container-fluid a:hover{
+    text-decoration: underline;
+}
+.register-container-fluid a:visited{
+    color: white;
+}
+/*Opciones*/
+.menu-container-fluid{
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+.menu-container-fluid a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+.menu-container-fluid a:hover{
+    text-decoration: underline;
+}
+.menu-container-fluid a:visited{
+    color: white;
+}
+.opciones-container{
+    margin-top: 100px;
+}
+.opciones-container ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: Arial;
+    font-size: 20px;
+    color: white;
+    margin-top: 100px;
+}
+.opciones-container ul li{
+    margin: 0 20px;
+    text-align: center;
+}
+.opciones-container ul li img{
+    display: block;
+    margin: 0 auto;
+    width: 300px;
+    height: 300px;
+}
+.opciones-container ul li a{
+    background-color: rgb(22, 32, 56);
+    color: white;
+    font-size: 30px;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.opciones-container ul li a:hover{
+    text-decoration: underline;
+}
+.opciones-container ul li a:visited{
+    color: white;
+}
+/*Recuperar contraseña*/
+.recovery-container-fluid{
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+.recovery-container-fluid a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+.recovery-container-fluid a:hover{
+    text-decoration: underline;
+}
+.recovery-container-fluid a:visited{
+    color: white;
+}
+.pass-container{
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+/*Consulta*/
+.cons-container-fluid{
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+.cons-container-fluid a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+.cons-container-fluid a:hover{
+    text-decoration: underline;
+}
+.cons-container-fluid a:visited{
+    color: white;
+}
+.cons-row{
+    display: grid;
+    grid-template-columns:repeat(2, 1fr);
+    grid-gap: 100px
+}
+.cons-column{
+    display: flex;
+    flex-direction: column;
+}
+.cons-container{
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 2000px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+.cons-container input{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+.cons-container input[type=number]{
+    width: 100px;
+    box-sizing: border-box;
+}
+.cons-container label{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.cons-container select{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.cons-container button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    width: 200px;
+    display: block;
+}
+
+.cons-container button[type="submit"] {
+    background-color: #f1c40f;
+}
+
+.cons-container button[type="reset"] {
+    background-color: #e74c3c;
+}
+
+.cons-container button:hover {
+    background-color: #f39c12;
+}
+
+.cons-container button[type="reset"]:hover {
+    background-color: #c0392b;
+}
+/*Medicamentos*/
+.med-container-fluid{
+    background-color: rgb(22, 32, 56);
+    padding: 20px;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+}
+.med-container-fluid h1{
+    margin-left: 20px;
+}
+.med-container-fluid a{
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+.med-container-fluid a:hover{
+    text-decoration: underline;
+}
+.med-container-fluid a:visited{
+    color: white;
+}
+.m-container{
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 25px;
+}
+.m-container a{
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    margin-top: auto;
+}
+.m-container a:hover{
+    text-decoration: underline;
+}
+.m-container img{
+    width: 50px;
+    height: 50px;
+    margin-top: 150px;
+}
+.m-container h2{
+    text-align: center;
+    font-size: 30px;
+    color: rgb(22, 32, 56);
+    font-family: Arial;
+}
+#add-form input[type=text], input[type=number]{
+    width: 400px;
+    padding: 10px 0;
+    margin: 10px 10px;
+    box-sizing: border-box;
+}
+#quantity, #presentation {
+    width: 100px;
+}
+#add-form button{
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    width: auto;
+}
+.search-container {
+    display: flex;
+    justify-content:right;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 50px;
+    font-size: 20px;
+}
+.search-container input {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 300px;
+}
+.search-container button {
+    background-color: rgb(22, 32, 56);
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width:auto;
+}
+.search-container h4{
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+    font-family: Arial;
+}
+#inventory-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+#inventory-table th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.h-container{
+    margin-top: 100px;
+}
+.h-container button{
+    background-color: rgb(22, 32, 56);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width:auto;
+}
+.h-container input[type=text]{
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 300px;
+}
+.add{
+    margin-left: 100px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width:auto;
+    text-decoration: none;
+}
+.add:hover{
+    text-decoration: underline;
+}
+.acercade-container{
+    margin-top: 100px;
+}
+.acercade-container h1{
+    font-size: 50px;
+    color: black;
+    text-align: center;
+}
+.acercade-container p{
+    font-size: 30px;
+    color: black;
+    text-align: center;
+}
+.acercade-container ul{
+    list-style-type: none;
+    font-size: 25px;
+    text-align: center;
+    display:inline;
+    justify-content: center;
+}
+.acercade-container ul li{
+    margin-top: 20px;
+    text-align: center;
+}
