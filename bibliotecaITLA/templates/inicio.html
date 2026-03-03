@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Universitaria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #f5f5f5);
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .contenedor-general {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #003366;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #003366;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0055a5;
+        }
+
+        .excel-btn {
+            background: #2e7d32;
+        }
+
+        .excel-btn:hover {
+            background: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-general">
+
+    <!-- 👤 USUARIOS -->
+    <div class="card">
+        <h2>Registro de Usuarios</h2>
+
+        <form method="POST" action="/registro">
+
+            <label>Nombre(s)</label>
+            <input type="text" name="nombre" required>
+
+            <label>Apellidos</label>
+            <input type="text" name="apellidos" required>
+
+            <label>Matrícula</label>
+            <input type="text" name="matricula" required>
+
+            <label>Correo</label>
+            <input type="email" name="correo" required>
+
+            <label>Tipo</label>
+            <select name="tipo" required>
+                <option value="">Seleccione...</option>
+                <option value="alumno">Alumno</option>
+                <option value="docente">Docente</option>
+                <option value="administrativo">Administrativo</option>
+            </select>
+
+            <label>Área</label>
+            <input type="text" name="area" required>
+
+            <button type="submit">Registrar usuario</button>
+        </form>
+
+        <!-- BOTÓN EXCEL -->
+        <form action="/exportar_usuarios">
+            <button type="submit" class="excel-btn">📊 Exportar usuarios a Excel</button>
+        </form>
+    </div>
+
+    <!-- 📚 LIBROS -->
+    <div class="card">
+        <h2>Registro de Libros</h2>
+
+        <form method="POST" action="/registrar_libro">
+
+            <label>Título</label>
+            <input type="text" name="titulo" required>
+
+            <label>Autor</label>
+            <input type="text" name="autor" required>
+
+            <label>Editorial</label>
+            <input type="text" name="editorial">
+
+            <label>Año</label>
+            <input type="number" name="anio">
+
+            <label>ISBN</label>
+            <input type="text" name="isbn">
+
+            <label>Cantidad</label>
+            <input type="number" name="cantidad" required>
+
+            <button type="submit">Registrar libro</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
