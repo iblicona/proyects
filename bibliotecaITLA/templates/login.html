@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión - Biblioteca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)),
+                url("{{ url_for('static', filename='img/fondo.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contenedor {
+            width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 80px;
+        }
+
+        /* BIENVENIDO + LOGO (SIN CUADRO) */
+        .bienvenida {
+            max-width: 450px;
+            margin-top: -70px; /* SUBE EL BLOQUE */
+        }
+
+        .bienvenida h1 {
+            font-size: 56px;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        .bienvenida img {
+            width: 300px;
+        }
+
+        /* LOGIN GRANDE */
+        .login-box {
+            width: 520px;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+        }
+
+        .login-box h2 {
+            text-align: center;
+            font-size: 34px;
+            margin-top: 0;
+            margin-bottom: 35px;
+        }
+
+        label {
+            display: block;
+            margin-top: 24px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 16px;
+            margin-top: 8px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #bbb;
+        }
+
+        .forgot {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .forgot a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .recordar {
+            margin-top: 22px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 45px;
+            padding: 18px;
+            background: #6b3e26;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        button:hover {
+            background: #4e2d1c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+
+    <!-- BIENVENIDO + LOGO -->
+    <div class="bienvenida">
+        <h1>¡Bienvenido!</h1>
+        <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="Logo Institucional">
+    </div>
+
+    <!-- LOGIN -->
+    <div class="login-box">
+        <h2>Iniciar Sesión</h2>
+
+        <form method="POST" action="/login">
+            <label>Usuario</label>
+            <input type="text" name="usuario" required>
+
+            <label>Contraseña</label>
+            <input type="password" name="password" required>
+
+            <div class="forgot">
+                <a href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <div class="recordar">
+                <label>
+                    <input type="checkbox"> Recordar sesión
+                </label>
+            </div>
+
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
