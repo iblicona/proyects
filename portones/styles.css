@@ -1,0 +1,20 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.btn-teal {
+  background-color: #009688;
+  color: #fff;
+}
+
+.btn-teal:hover {
+  background-color: #00796b;
+}
+
+footer img {
+  height: 30px;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="../bootstrap.min.css">
+        <link rel="stylesheet" href="../styles.css">
+        <title>Sistema de Acceso - Menú</title>
+    </head>
+    <body class="bg-light d-flex flex-column min-vh-100">
+        
+        <nav class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container-fluid px-4">
+                <span class="navbar-brand mb-0 h1 d-flex align-items-center">
+                    <img src="../imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="25" class="me-2">
+                    ITLA Access
+                </span>
+                <span class="navbar-text text-white" id="infoUsuario">
+                    Cargando usuario...
+                </span>
+            </div>
+        </nav>
+
+        <div class="container my-auto d-flex justify-content-center align-items-center">
+            <div class="card shadow p-4 border-0" style="width: 100%; max-width: 450px;">
+                <h3 class="text-center mb-4 text-teal fw-bold">Módulos del Sistema</h3>
+                
+                <div class="d-grid gap-3">
+                    <a href="registro.html" class="btn btn-outline-teal btn-lg text-start shadow-sm border-2">
+                        👥 Alta de Usuarios y QR
+                    </a>
+                    <a href="regis_invi.html" class="btn btn-outline-teal btn-lg text-start shadow-sm border-2">
+                        🎫 Registro de Invitados
+                    </a>
+                    <a href="monit.html" class="btn btn-outline-teal btn-lg text-start shadow-sm border-2">
+                        📹 Monitoreo en Tiempo Real
+                    </a>
+                    
+                    <a href="admi.html" class="btn btn-outline-primary btn-lg text-start shadow-sm border-2 mt-2" id="btnAdmin">
+                        ⚙️ Panel de Administración
+                    </a>
+                    
+                    <button id="btnSalir" class="btn btn-danger btn-lg text-start shadow-sm mt-3">
+                        🚪 Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="bg-dark text-white text-center py-3 mt-auto">
+            <div class="container">
+                <span class="small">Sistema de Acceso Escolar Institucional</span>
+            </div>
+        </footer>
+
+        <script src="../js/menu.js"></script>
+    </body>
+</html>
