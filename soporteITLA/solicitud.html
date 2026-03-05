@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitud de Equipo - ITLA</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+    <img src="img/imagen.png" class="logo">
+</header>
+
+<div class="titulo-header">
+    <h1>Solicitud de Equipo en Línea</h1>
+</div>
+
+<div class="container">
+
+    <h2>Formulario de Solicitud</h2>
+
+    <form id="formSolicitud">
+
+        <label>Nombre Completo</label>
+        <input type="text" id="nombre" required>
+
+        <label>Tipo de Usuario</label>
+        <select id="tipoUsuario">
+            <option>Alumno</option>
+            <option>Docente</option>
+            <option>Administrativo</option>
+        </select>
+
+        <label>Equipo a solicitar</label>
+        <select id="equipo">
+            <option>Laptop</option>
+            <option>Cañón</option>
+            <option>Bocinas</option>
+            <option>Cable HDMI</option>
+            <option>Cable Ethernet</option>
+            <option>Llaves</option>
+            <option>Extensión</option>
+        </select>
+
+        <label>Cantidad</label>
+        <input type="number" id="cantidad" min="1" value="1">
+
+        <label>Aula</label>
+        <input type="text" id="aula" placeholder="Ej: A-203">
+
+        <label>Horas (máximo 4)</label>
+        <input type="number" id="horas" min="1" max="4">
+
+        <button type="button" onclick="enviarSolicitud()">Enviar Solicitud</button>
+
+    </form>
+
+    <div id="mensaje" style="margin-top:20px; font-weight:bold;"></div>
+
+</div>
+
+<script src="js/solicitud.js"></script>
+
+</body>
+</html>

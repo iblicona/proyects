@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f6f9;
+}
+
+header {
+    background-color: white;
+    padding: 10px 0;
+    border-bottom: 5px solid #0c2340;
+    text-align: center;
+}
+
+.logo {
+    height: 70px;
+}
+
+.titulo-header {
+    background-color: #0c2340;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #0c2340;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0 15px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #023e8a;
+}
+
+.table-container {
+    width: 95%;
+    margin: 20px auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #0c2340;
+    color: white;
+}
+
+.activa {
+    background-color: #fff3b0;
+}
+
+.devuelta {
+    background-color: #c8facc;
+}

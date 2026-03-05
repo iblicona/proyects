@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rentas Activas - ITLA</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+    <img src="img/imagen.png" class="logo">
+</header>
+
+<div class="titulo-header">
+    <h1>Rentas en Tiempo Real</h1>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Equipos</th>
+                <th>Identificación</th>
+                <th>Aula</th>
+                <th>Horas</th>
+                <th>Hora Registro</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody id="tablaRentas">
+        </tbody>
+    </table>
+    <h2>Solicitudes Online</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Equipo</th>
+            <th>Cantidad</th>
+            <th>Aula</th>
+            <th>Horas</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaSolicitudes"></tbody>
+</table>
+<button onclick="mostrarAjusteStock()">Ajustar Inventario</button>
+
+<div id="ajusteStock" style="display:none; margin-top:15px;">
+    <select id="equipoAjuste"></select>
+    <input type="number" id="cantidadAjuste" placeholder="Cantidad (+ o -)">
+    <button onclick="aplicarAjuste()">Aplicar</button>
+</div>
+</div>
+
+<script src="js/script.js"></script>
+
+<script>
+    // Esto asegura que cargue correctamente
+document.addEventListener("DOMContentLoaded", function() {
+    cargarTabla();
+    cargarSolicitudes();
+});
+</script>
+
+</body>
+</html>
