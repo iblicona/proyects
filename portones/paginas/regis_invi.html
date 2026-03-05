@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="../bootstrap.min.css">
+        <link rel="stylesheet" href="../styles.css">
+        <title>Sistema de Acceso - Registro de Invitados</title>
+    </head>
+    <body class="bg-light d-flex flex-column min-vh-100">
+        <div class="container my-4 d-flex justify-content-center align-items-center">
+            <div class="card shadow p-4" style="width: 100%; max-width: 700px;">
+                <h3 class="text-center mb-3">Registro de Invitados (Visitas)</h3>
+                
+                <div class="alert alert-warning text-dark text-center mb-4" role="alert">
+                    <strong>Aviso para Backend:</strong> La tabla <code>persona</code> actual no admite 'invitados' en su ENUM, y faltan campos para CURP, motivo y a quién visita. Pendiente actualización en BD.
+                </div>
+
+                <form id="formularioInvitado">
+                    <h5 class="text-teal border-bottom pb-2">Datos del Visitante</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="nombre_invitado" class="form-label">Nombre(s)</label>
+                            <input type="text" class="form-control" id="nombre_invitado" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="apellido_p_invitado" class="form-label">Apellido Paterno</label>
+                            <input type="text" class="form-control" id="apellido_p_invitado" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="apellido_m_invitado" class="form-label">Apellido Materno</label>
+                            <input type="text" class="form-control" id="apellido_m_invitado">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="cedula" class="form-label">CURP / Identificación</label>
+                            <input type="text" class="form-control" id="cedula" placeholder="Clave de identificación" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="telefono_invitado" class="form-label">Teléfono de contacto</label>
+                            <input type="tel" class="form-control" id="telefono_invitado" placeholder="10 dígitos">
+                        </div>
+                    </div>
+
+                    <h5 class="text-teal border-bottom pb-2 mt-3">Detalles de la Visita</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="motivo" class="form-label">Motivo de la visita</label>
+                            <input type="text" class="form-control" id="motivo" placeholder="Ej. Junta, Entrega de documentos..." required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="persona_visitar" class="form-label">Persona / Área a visitar</label>
+                            <input type="text" class="form-control" id="persona_visitar" placeholder="Nombre del docente o área" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_visita" class="form-label">Fecha de visita</label>
+                            <input type="date" class="form-control" id="fecha_visita" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="hora_visita" class="form-label">Hora estimada de llegada</label>
+                            <input type="time" class="form-control" id="hora_visita" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="duracion" class="form-label">Duración estimada del QR temporal</label>
+                        <select class="form-select" id="duracion">
+                            <option value="1">1 hora</option>
+                            <option value="2">2 horas</option>
+                            <option value="4">4 horas</option>
+                            <option value="8">Todo el día (8 horas)</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <div class="border rounded p-3 bg-white shadow-sm">
+                            <div class="fs-1 mb-2 text-teal">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
+                                    <path d="M2 2h2v2H2V2Z"/>
+                                    <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/>
+                                    <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/>
+                                    <path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/>
+                                    <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/>
+                                </svg>
+                            </div>
+                            <p class="mb-0 text-muted small">Al registrar, se generará un código QR con validez limitada a la duración seleccionada.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="menu.html" class="btn btn-outline-secondary flex-fill">Regresar</a>
+                        <button type="submit" class="btn btn-teal flex-fill">Generar QR de Invitado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <footer class="bg-dark text-white text-center py-3 mt-auto">
+            <div class="container d-flex justify-content-between align-items-center">
+                <span>Sistema de Acceso</span>
+                <img src="../imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="30">
+            </div>
+        </footer>
+
+        <script src="../js/regis_invi.js"></script>
+    </body>
+</html>
