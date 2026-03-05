@@ -1,0 +1,175 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('../img/fondo.jpg') center/cover no-repeat;
+}
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar {
+  width: 230px;
+  background: #cbb59e;
+  padding: 20px;
+  border-right: 2px solid #00000033;
+  transition: width 0.3s;
+  overflow: hidden;
+}
+.sidebar-top h2 { margin: 0; }
+.sidebar-content { margin-top: 20px; }
+.admin-box {
+  background: #d9c7b2;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+.menu-btn {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  background: #6b5a45;
+  color: white;
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+}
+.menu-btn.activo { background: #4e2c1e; }
+.sidebar.oculto  { width: 0; padding: 0; }
+
+/* ── Main ─────────────────────────────────────────────────── */
+.main { flex: 1; padding: 25px 40px; }
+
+/* ── Topbar ───────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu-toggle {
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.topbar-right { display: flex; align-items: center; }
+.buscador {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #999;
+  margin-right: 10px;
+  width: 220px;
+}
+
+.linea-superior {
+  width: 100%;
+  height: 2px;
+  background: #00000033;
+  margin: 15px 0 20px 0;
+}
+.titulo { margin-bottom: 15px; }
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card {
+  background: #e6e6e6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card-header {
+  background: #3b383f;
+  color: white;
+  padding: 15px;
+  font-weight: bold;
+}
+
+/* ── Filtros ──────────────────────────────────────────────── */
+.filtro { padding: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.filtro-btn {
+  background: #3b383f;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+.filtro-btn:hover { background: #555; }
+
+/* ── Tabla ────────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #d9d9d9;
+}
+th, td {
+  border: 1px solid #999;
+  padding: 10px;
+  text-align: center;
+}
+th { background: #c0b8b0; }
+
+/* ── Exportar ─────────────────────────────────────────────── */
+.exportar-btn {
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.exportar-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+}
+.exportar-btn:active { transform: scale(0.95); }
+
+/* ── Modal de edición ─────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-box {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.modal-box h3 { margin-bottom: 18px; color: #3b383f; }
+.modal-box label {
+  display: block;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+.modal-box input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #aaa;
+  border-radius: 7px;
+  font-size: 14px;
+}
+.modal-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
