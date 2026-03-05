@@ -1,9 +1,9 @@
 <?php
 
-$host = "endpoint-rds.amazonaws.com";
-$usuario = "usuario_db";
-$password = "password_db";
-$base_datos = "nombre_db";
+$host = "production.ccjgeakiwlqp.us-east-1.rds.amazonaws.com";
+$usuario = "admin";
+$password = "Semillita1*";
+$base_datos = "datos";
 
 $conn = new mysqli($host, $usuario, $password, $base_datos);
 
