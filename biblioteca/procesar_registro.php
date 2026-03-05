@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Si todo salió bien
+    // bien
     if (empty($errores)) {
         try {
             $pdo  = getDB();
