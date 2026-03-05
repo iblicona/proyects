@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro – Biblioteca ITLA</title>
+  <link rel="stylesheet" href="css/registro.css">
+</head>
+<body>
+<div class="contenedor">
+  <div class="form-box">
+    <h2>Registro de Usuario – Biblioteca</h2>
+
+    <div id="contenedor-alertas"></div>
+
+    <form method="POST" action="procesar_registro.php" enctype="multipart/form-data" id="formRegistro">
+
+      <label>Nombre completo</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label>Matrícula</label>
+      <input type="text" id="matricula" name="matricula" required>
+
+      <label>Tipo de usuario</label>
+      <select id="tipo" name="tipo" required>
+        <option value="">Seleccione...</option>
+        <option value="Alumno">Alumno</option>
+        <option value="Docente">Docente</option>
+        <option value="Administrativo">Administrativo</option>
+      </select>
+
+      <label>Carrera / Área</label>
+      <input type="text" id="area" name="area" required>
+
+      <label>Correo institucional</label>
+      <input type="email" id="correo" name="correo" placeholder="usuario@itla.edu.mx" required>
+      <small id="correoFeedback" class="feedback"></small>
+
+      <label>Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" required>
+
+      <label>Fotografía (opcional)</label>
+      <input type="file" id="foto" name="foto" accept="image/*">
+
+      <button type="submit" id="btnRegistrar">Registrar usuario</button>
+    </form>
+  </div>
+</div>
+
+<div class="ia-mascota" onclick="toggleIA()">
+  <img src="img/logo2.png" alt="Asistente ITLA">
+  <span>¿Necesitas ayuda?</span>
+</div>
+
+<div class="ia-panel" id="iaPanel">
+  <div class="ia-header">
+    <img src="img/logo2.png" alt="Asistente">
+    <strong>Asistente ITLA</strong>
+    <button onclick="toggleIA()">✖</button>
+  </div>
+  <div class="ia-chat" id="iaChat">
+    <div class="ia-msg ia-bot">
+      <div class="globo">Hola 👋 ¿Necesitas ayuda para registrarte?</div>
+      <div class="hora">--:--</div>
+    </div>
+  </div>
+  <div class="ia-input">
+    <input type="text" id="preguntaIA" placeholder="Escribe tu duda aquí...">
+    <button onclick="responderIA()">Enviar</button>
+  </div>
+</div>
+
+<audio id="sonidoMensaje" src="img/mensaje.mp3" preload="auto"></audio>
+<script src="js/registro.js"></script>
+<script>
+  // Leer los mensajes de la URL
+  const paramsReg = new URLSearchParams(window.location.search);
+  const tipo = paramsReg.get('tipo');
+  const mensaje = paramsReg.get('mensaje');
+
+  if (tipo && mensaje) {
+    const contenedor = document.getElementById('contenedor-alertas');
+    // Convertimos los separadores " | " que mandó PHP a saltos de línea HTML
+    const textoFormateado = decodeURIComponent(mensaje).replace(/ \| /g, '<br>');
+    
+    contenedor.innerHTML = `
+      <div class="alerta alerta-${tipo}">
+        ${textoFormateado}
+      </div>
+    `;
+  }
+</script>
+</body>
+</html>
