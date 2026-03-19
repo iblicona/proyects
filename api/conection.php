@@ -7,11 +7,10 @@ $base_datos = "datos";
 
 $conn = mysqli_connect($host, $usuario, $password, $base_datos);
 
-if ($conn->connect_error) {
-    die(json_encode([
-        "status" => "error",
-        "mensaje" => "Error de conexión a la base de datos"
-    ]));
-}
-
+if (!$conn){
+    echo "Error de Conexion Exitosa";
+    }
+    else{
+        echo"Conexion Exitosa";
+    }
 ?>
