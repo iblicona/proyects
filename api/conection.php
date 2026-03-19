@@ -5,7 +5,7 @@ $usuario = "admin";
 $password = "Semillita1*";
 $base_datos = "datos";
 
-$conn = new mysqli($host, $usuario, $password, $base_datos);
+$conn = mysqli_connect($host, $usuario, $password, $base_datos);
 
 if ($conn->connect_error) {
     die(json_encode([
