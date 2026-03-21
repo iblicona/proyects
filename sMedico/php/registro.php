@@ -15,9 +15,35 @@ if(isset($_POST['enviar'])) {
     $alergias = $_POST['alergies'];
     $enfermedades_cronicas = $_POST['chronic_diseases'];
 
-    $sql = "INSERT INTO Alumnos (nombre_alumno, apellido_paterno, apellido_materno, matricula, genero, correo, telefono, carrera, fecha_nacimiento, direccion, contacto_emergencia, alergias, enfermedades_cronicas) 
-            VALUES ('$nombre', '$apellidoP', '$apellidoM', '$matricula', '$genero', '$correoI', '$telefono', '$escolaridad', '$fecha_nacimiento', '$direccion', '$contactoE', '$alergias', '$enfermedades_cronicas')";
-    
+   $sql = "INSERT INTO Alumnos (
+    matricula,
+    nombre_alumno,
+    apellido_paterno,
+    apellido_materno,
+    genero,
+    correo,
+    telefono,
+    carrera,
+    fecha_nacimiento,
+    direccion,
+    contacto_emergencia,
+    alergias,
+    enfermedades_cronicas
+) VALUES (
+    '$matricula',
+    '$nombre',
+    '$apellidoP',
+    '$apellidoM',
+    '$genero',
+    '$correoI',
+    '$telefono',
+    '$escolaridad',
+    '$fecha_nacimiento',
+    '$direccion',
+    '$contactoE',
+    '$alergias',
+    '$enfermedades_cronicas'
+)"; 
     if (mysqli_query($conn, $sql)) {
         echo "Registro exitoso.";
     } else {
