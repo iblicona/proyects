@@ -1,45 +1,20 @@
 /* ================================
-   DATOS
+   EQUIPOS SELECCIONADOS (temporal)
 ================================ */
-
-function obtenerRentas() {
-    return JSON.parse(localStorage.getItem("rentas")) || [];
-}
-
-function guardarRentas(data) {
-    localStorage.setItem("rentas", JSON.stringify(data));
-}
 
 let equiposSeleccionados = [];
-/* ================================
-   STOCK GENERAL
-================================ */
-
-let stock = JSON.parse(localStorage.getItem("stock")) || {
-    "Laptop": 5,
-    "Cañón": 3,
-    "Bocinas": 4,
-    "Cable HDMI": 10,
-    "Cable Ethernet": 8,
-    "Llaves": 6,
-    "Extensión": 5
-};
-
-function guardarStock() {
-    localStorage.setItem("stock", JSON.stringify(stock));
-}
 
 /* ================================
-   SOLO SI EXISTE EL SELECT
+   SELECTOR DE EQUIPO (rentas.html)
 ================================ */
 
 const equipoSelect = document.getElementById("equipoSelect");
 
 if (equipoSelect) {
 
-    equipoSelect.addEventListener("change", function() {
+    equipoSelect.addEventListener("change", function () {
 
-        const valor = this.value;
+        const valor      = this.value;
         const campoExtra = document.getElementById("campoExtra");
         campoExtra.innerHTML = "";
 
@@ -60,29 +35,23 @@ if (equipoSelect) {
 }
 
 /* ================================
-   AGREGAR EQUIPO
+   AGREGAR EQUIPO A LA LISTA
 ================================ */
 
 function agregarEquipo() {
 
     const equipoBase = document.getElementById("equipoSelect").value;
-    let equipoFinal = equipoBase;
+    let equipoFinal  = equipoBase;
 
     if (equipoBase === "Laptop") {
         const codigo = document.getElementById("codigoLaptop")?.value;
-        if (!codigo) {
-            alert("Debes ingresar el código de inventario");
-            return;
-        }
+        if (!codigo) { alert("Debes ingresar el código de inventario"); return; }
         equipoFinal = `Laptop (${codigo})`;
     }
 
     if (equipoBase === "Otro") {
         const otro = document.getElementById("otroEquipo")?.value;
-        if (!otro) {
-            alert("Debes especificar el equipo");
-            return;
-        }
+        if (!otro) { alert("Debes especificar el equipo"); return; }
         equipoFinal = `Otro: ${otro}`;
     }
 
@@ -101,7 +70,7 @@ function actualizarLista() {
         lista.innerHTML += `
             <li>
                 ${eq}
-                <button onclick="quitarEquipo(${index})">X</button>
+                <button type="button" onclick="quitarEquipo(${index})">X</button>
             </li>
         `;
     });
@@ -113,257 +82,283 @@ function quitarEquipo(index) {
 }
 
 /* ================================
-   REGISTRAR RENTA
+   REGISTRAR RENTA → API
 ================================ */
 
-function registrarRenta() {
+async function registrarRenta() {
 
     const nombre = document.getElementById("nombre").value;
     const idTipo = document.getElementById("idTipo").value;
-    const aula = document.getElementById("aula").value;
-    const horas = document.getElementById("horas").value;
+    const aula   = document.getElementById("aula").value;
+    const horas  = document.getElementById("horas").value;
 
     if (!nombre || !aula || !horas || equiposSeleccionados.length === 0) {
         alert("Faltan datos obligatorios");
         return;
     }
 
-    const rentas = obtenerRentas();
+    const sesion          = JSON.parse(sessionStorage.getItem("sesionActiva"));
+    const usuarioRegistro = sesion ? sesion.usuario : "Desconocido";
 
-    const ahora = new Date();
-    const hora = ahora.toLocaleTimeString();
+    try {
+        const response = await fetch("api/rentas.php?action=registrar", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({
+                nombre,
+                identificacion: idTipo,
+                equipos: [...equiposSeleccionados],
+                aula,
+                horas: parseInt(horas),
+                usuario: usuarioRegistro
+            })
+        });
 
-    rentas.push({
-        id: rentas.length + 1,
-        nombre,
-        identificacion: idTipo,
-        equipos: [...equiposSeleccionados],
-        aula,
-        horas,
-        hora,
-        estado: "Activa"
-    });
+        const data = await response.json();
 
-    guardarRentas(rentas);
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
 
-    alert("Renta registrada correctamente");
+        alert("✅ Renta registrada correctamente");
 
-    equiposSeleccionados = [];
-    actualizarLista();
-    document.getElementById("formRenta").reset();
+        equiposSeleccionados = [];
+        actualizarLista();
+        document.getElementById("formRenta").reset();
+        document.getElementById("campoExtra").innerHTML = "";
+
+    } catch (err) {
+        alert("Error de conexión: " + err.message);
+    }
 }
 
 /* ================================
-   TABLA
+   CARGAR TABLA DE RENTAS → API
 ================================ */
 
-function cargarTabla() {
+async function cargarTabla() {
 
     const tabla = document.getElementById("tablaRentas");
     if (!tabla) return;
 
-    const rentas = obtenerRentas();
+    try {
+        const response = await fetch("api/rentas.php?action=listar");
+        const rentas   = await response.json();
 
-    tabla.innerHTML = "";
+        tabla.innerHTML = "";
 
-    rentas.forEach(r => {
+        rentas.forEach(r => {
 
-        const equiposTexto = Array.isArray(r.equipos)
-            ? r.equipos.join(", ")
-            : (r.equipo || "Sin equipo");
+            const equiposTexto = Array.isArray(r.equipos)
+                ? r.equipos.join(", ")
+                : (r.equipos || "Sin equipo");
 
-        let fila = `
-        <tr class="${r.estado === "Activa" ? "activa" : "devuelta"}">
-            <td>${r.id}</td>
-            <td>${r.nombre}</td>
-            <td>${equiposTexto}</td>
-            <td>${r.identificacion}</td>
-            <td>${r.aula}</td>
-            <td>${r.horas}</td>
-            <td>${r.hora}</td>
-            <td>${r.estado}</td>
-            <td>
-                <button onclick="marcarDevuelta(${r.id})">Devuelta</button>
-            </td>
-        </tr>
-        `;
+            tabla.innerHTML += `
+            <tr class="${r.estado === "Activa" ? "activa" : "devuelta"}">
+                <td>${r.id}</td>
+                <td>${r.nombre}</td>
+                <td>${equiposTexto}</td>
+                <td>${r.identificacion}</td>
+                <td>${r.aula}</td>
+                <td>${r.horas}</td>
+                <td>${r.hora_registro}</td>
+                <td>${r.usuario_registro || "N/A"}</td>
+                <td>${r.estado}</td>
+                <td>
+                    ${r.estado === "Activa"
+                        ? `<button onclick="marcarDevuelta(${r.id})">Devuelta</button>`
+                        : "—"}
+                </td>
+            </tr>`;
+        });
 
-        tabla.innerHTML += fila;
-    });
+    } catch (err) {
+        console.error("Error cargando rentas:", err);
+    }
 }
 
-function marcarDevuelta(id) {
-
-    let rentas = obtenerRentas();
-
-    rentas = rentas.map(r => {
-
-        if (r.id === id && r.estado === "Activa") {
-
-            // Regresar stock
-            if (Array.isArray(r.equipos)) {
-
-                r.equipos.forEach(eq => {
-
-                    const partes = eq.split(" x");
-                    const nombreEquipo = partes[0];
-                    const cantidad = parseInt(partes[1]) || 1;
-
-                    if (stock[nombreEquipo] !== undefined) {
-                        stock[nombreEquipo] += cantidad;
-                    }
-                });
-
-                guardarStock();
-            }
-
-            r.estado = "Devuelta";
-        }
-
-        return r;
-    });
-
-    guardarRentas(rentas);
-    cargarTabla();
-}
 /* ================================
-   SOLICITUDES ONLINE
+   MARCAR DEVUELTA → API
 ================================ */
 
-function obtenerSolicitudes() {
-    return JSON.parse(localStorage.getItem("solicitudes")) || [];
+async function marcarDevuelta(id) {
+
+    if (!confirm("¿Confirmar devolución del equipo?")) return;
+
+    try {
+        const response = await fetch("api/rentas.php?action=devolver", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ id })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        cargarTabla();
+
+    } catch (err) {
+        alert("Error de conexión: " + err.message);
+    }
 }
 
-function guardarSolicitudes(data) {
-    localStorage.setItem("solicitudes", JSON.stringify(data));
-}
+/* ================================
+   CARGAR SOLICITUDES → API
+================================ */
 
-function cargarSolicitudes() {
+async function cargarSolicitudes() {
 
     const tabla = document.getElementById("tablaSolicitudes");
     if (!tabla) return;
 
-    const solicitudes = obtenerSolicitudes();
-    tabla.innerHTML = "";
+    try {
+        const response    = await fetch("api/solicitudes.php?action=listar");
+        const solicitudes = await response.json();
 
-    solicitudes.forEach(s => {
+        tabla.innerHTML = "";
 
-        let fila = `
-        <tr>
-            <td>${s.nombre}</td>
-            <td>${s.tipoUsuario}</td>
-            <td>${s.equipo}</td>
-            <td>${s.cantidad}</td>
-            <td>${s.aula}</td>
-            <td>${s.horas}</td>
-            <td>${s.estado}</td>
-            <td>
-                ${s.estado === "Pendiente" ? `
-                    <button onclick="aprobarSolicitud(${s.id})">Aprobar</button>
-                    <button onclick="rechazarSolicitud(${s.id})">Rechazar</button>
-                ` : ""}
-            </td>
-        </tr>
-        `;
+        solicitudes.forEach(s => {
 
-        tabla.innerHTML += fila;
-    });
-}
+            tabla.innerHTML += `
+            <tr>
+                <td>${s.nombre}</td>
+                <td>${s.tipo_usuario}</td>
+                <td>${s.equipo}</td>
+                <td>${s.cantidad}</td>
+                <td>${s.aula}</td>
+                <td>${s.horas}</td>
+                <td>${s.estado}</td>
+                <td>
+                    ${s.estado === "Pendiente" ? `
+                        <button onclick="aprobarSolicitud(${s.id})">Aprobar</button>
+                        <button onclick="rechazarSolicitud(${s.id})">Rechazar</button>
+                    ` : "—"}
+                </td>
+            </tr>`;
+        });
 
-function aprobarSolicitud(id) {
-
-    let solicitudes = obtenerSolicitudes();
-    let rentas = obtenerRentas();
-
-    const solicitud = solicitudes.find(s => s.id === id);
-
-    if (!solicitud) return;
-
-    if (solicitud.cantidad > stock[solicitud.equipo]) {
-        alert("No hay suficiente stock disponible.");
-        return;
+    } catch (err) {
+        console.error("Error cargando solicitudes:", err);
     }
-
-    // Descontar stock
-    stock[solicitud.equipo] -= solicitud.cantidad;
-    guardarStock();
-
-    // Crear renta activa
-    const ahora = new Date();
-    const hora = ahora.toLocaleTimeString();
-
-    rentas.push({
-        id: rentas.length + 1,
-        nombre: solicitud.nombre,
-        identificacion: solicitud.tipoUsuario,
-        equipos: [`${solicitud.equipo} x${solicitud.cantidad}`],
-        aula: solicitud.aula,
-        horas: solicitud.horas,
-        hora,
-        estado: "Activa"
-    });
-
-    guardarRentas(rentas);
-
-    // Cambiar estado solicitud
-    solicitud.estado = "Aprobada";
-    guardarSolicitudes(solicitudes);
-
-    cargarSolicitudes();
-    cargarTabla();
 }
 
-function rechazarSolicitud(id) {
-
-    let solicitudes = obtenerSolicitudes();
-
-    solicitudes = solicitudes.map(s => {
-        if (s.id === id) s.estado = "Rechazada";
-        return s;
-    });
-
-    guardarSolicitudes(solicitudes);
-    cargarSolicitudes();
-}
 /* ================================
-   AJUSTE MANUAL DE INVENTARIO
+   APROBAR SOLICITUD → API
 ================================ */
 
-function mostrarAjusteStock() {
+async function aprobarSolicitud(id) {
 
-    const contenedor = document.getElementById("ajusteStock");
-    const select = document.getElementById("equipoAjuste");
+    const sesion          = JSON.parse(sessionStorage.getItem("sesionActiva"));
+    const usuarioRegistro = sesion ? sesion.usuario : "Soporte";
 
-    contenedor.style.display =
-        contenedor.style.display === "none" ? "block" : "none";
+    try {
+        const response = await fetch("api/solicitudes.php?action=aprobar", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ id, usuarioRegistro })
+        });
 
-    select.innerHTML = "";
+        const data = await response.json();
 
-    Object.keys(stock).forEach(equipo => {
-        select.innerHTML += `<option value="${equipo}">${equipo}</option>`;
-    });
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        cargarSolicitudes();
+        cargarTabla();
+
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
 }
 
-function aplicarAjuste() {
+/* ================================
+   RECHAZAR SOLICITUD → API
+================================ */
 
-    const equipo = document.getElementById("equipoAjuste").value;
+async function rechazarSolicitud(id) {
+
+    try {
+        const response = await fetch("api/solicitudes.php?action=rechazar", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ id })
+        });
+
+        const data = await response.json();
+        if (data.error) { alert("Error: " + data.error); return; }
+
+        cargarSolicitudes();
+
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
+}
+
+/* ================================
+   AJUSTE MANUAL DE STOCK
+================================ */
+
+async function mostrarAjusteStock() {
+
+    const contenedor = document.getElementById("ajusteStock");
+    const select     = document.getElementById("equipoAjuste");
+
+    const visible = contenedor.style.display !== "none";
+    contenedor.style.display = visible ? "none" : "block";
+
+    if (!visible) {
+        try {
+            const response = await fetch("api/stock.php?action=listar");
+            const stock    = await response.json();
+
+            select.innerHTML = "";
+
+            Object.keys(stock).forEach(equipo => {
+                select.innerHTML += `<option value="${equipo}">${equipo} (${stock[equipo]} disponibles)</option>`;
+            });
+
+        } catch (err) {
+            alert("Error cargando inventario: " + err.message);
+        }
+    }
+}
+
+async function aplicarAjuste() {
+
+    const equipo   = document.getElementById("equipoAjuste").value;
     const cantidad = parseInt(document.getElementById("cantidadAjuste").value);
 
     if (isNaN(cantidad)) {
-        alert("Ingresa una cantidad válida.");
+        alert("Ingresa una cantidad válida (puede ser negativa para restar).");
         return;
     }
 
-    stock[equipo] += cantidad;
+    try {
+        const response = await fetch("api/stock.php?action=ajustar", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ equipo, cantidad })
+        });
 
-    if (stock[equipo] < 0) {
-        stock[equipo] = 0;
+        const data = await response.json();
+
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        alert(`✅ Inventario actualizado. ${equipo}: ${data.nuevaCantidad} unidades`);
+        document.getElementById("cantidadAjuste").value = "";
+        mostrarAjusteStock(); // Refrescar lista
+
+    } catch (err) {
+        alert("Error: " + err.message);
     }
-
-    guardarStock();
-    cargarPanelStock();
-
-    document.getElementById("cantidadAjuste").value = "";
-
-    alert("Inventario actualizado correctamente.");
 }

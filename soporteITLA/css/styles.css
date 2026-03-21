@@ -86,3 +86,24 @@ th {
 .devuelta {
     background-color: #c8facc;
 }
+.barra-sesion{
+
+background:#0a2a5e;
+color:white;
+padding:10px 20px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+
+.barra-sesion button{
+
+background:#ffcc00;
+border:none;
+padding:6px 12px;
+cursor:pointer;
+border-radius:5px;
+
+}

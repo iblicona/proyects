@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Historial de Rentas - ITLA</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; }
+body { background: #f0f4f9; margin: 0; font-family: Arial, sans-serif; }
+
+/* ── TABS ── */
+.tabs-wrapper {
+    display: flex;
+    gap: 6px;
+    padding: 18px 30px 0;
+    background: #fff;
+    border-bottom: 2px solid #e2e8f0;
+}
+.tab-btn {
+    padding: 11px 28px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: #e8edf5;
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.tab-btn:hover { background: #d0d9ec; }
+.tab-btn.active { background: #0a2a5e; color: #fff; border-bottom: 3px solid #ffcc00; }
+
+.live-dot {
+    width: 8px; height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
+    animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+    0%   { box-shadow: 0 0 0 0   rgba(74,222,128,0.7); }
+    70%  { box-shadow: 0 0 0 6px rgba(74,222,128,0);   }
+    100% { box-shadow: 0 0 0 0   rgba(74,222,128,0);   }
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── SECTION WRAPPER ── */
+.section-wrap {
+    max-width: 1300px;
+    margin: 24px auto;
+    padding: 0 24px;
+}
+
+/* ── CARD ── */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.card-header {
+    background: linear-gradient(135deg, #0a2a5e, #1a52a8);
+    color: #fff;
+    padding: 15px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.card-header-left { display: flex; align-items: center; gap: 10px; }
+.card-body { padding: 20px 22px; }
+
+/* ── FILTROS ── */
+.filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    align-items: end;
+}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.field input, .field select {
+    padding: 9px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 7px;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+    margin: 0;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus, .field select:focus {
+    border-color: #1a52a8;
+    box-shadow: 0 0 0 3px rgba(26,82,168,0.1);
+}
+
+/* ── BOTONES ── */
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px; border: none; border-radius: 7px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+    white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: #0a2a5e; color: #fff; }
+.btn-primary:hover { background: #1a52a8; }
+.btn-outline { background: transparent; color: #0a2a5e; border: 1.5px solid #0a2a5e; }
+.btn-outline:hover { background: #0a2a5e; color: #fff; }
+.btn-devolver { background: #10b981; color: #fff; padding: 5px 12px; font-size: 12px; }
+.btn-devolver:hover { background: #059669; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ── TABLA ── */
+.table-scroll { overflow-x: auto; }
+.hist-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+.hist-table th {
+    background: #0c2340; color: #fff;
+    padding: 11px 12px; text-align: left;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+.hist-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f4f9;
+    vertical-align: middle;
+}
+.hist-table tr:hover td { background: #f8faff; }
+.hist-table tr:last-child td { border-bottom: none; }
+.hist-table tr.activa td  { border-left: 3px solid #f59e0b; }
+.hist-table tr.devuelta td { border-left: 3px solid #10b981; }
+
+/* ── BADGES ── */
+.badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 20px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+.badge-activa   { background: #fef9c3; color: #854d0e; }
+.badge-devuelta { background: #dcfce7; color: #166534; }
+
+/* ── STATS ROW ── */
+.stats-row {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.stat-pill {
+    background: #f0f4f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #4a5568;
+    display: flex; align-items: center; gap: 7px;
+}
+.stat-pill b { color: #0a2a5e; font-size: 15px; }
+
+/* ── PAGINACIÓN ── */
+.paginacion {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 22px;
+    border-top: 1px solid #f0f4f9;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.paginacion-info { font-size: 13px; color: #718096; }
+.paginacion-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.pag-btn {
+    min-width: 36px; height: 36px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff; color: #0a2a5e;
+    border-radius: 7px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.pag-btn:hover { background: #0a2a5e; color: #fff; border-color: #0a2a5e; }
+.pag-btn.active { background: #0a2a5e; color: #fff; border-color: #0a2a5e; }
+.pag-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* ── EMPTY / LOADING ── */
+.empty-state {
+    text-align: center; padding: 50px 20px;
+    color: #a0aec0; font-size: 14px;
+}
+.empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+
+/* ── CONTADOR LIVE ── */
+.live-badge {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── NAV BACK ── */
+.nav-back-wrapper {
+    display: flex; align-items: center;
+    padding: 12px 30px;
+    background: #fff; border-bottom: 1px solid #e2e8f0; gap: 16px;
+}
+.btn-regresar {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #0a2a5e, #1a52a8);
+    color: white !important; text-decoration: none;
+    padding: 9px 20px; border-radius: 50px;
+    font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(10,42,94,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-regresar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,42,94,0.4); }
+.arrow-circle {
+    width: 24px; height: 24px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: transform 0.2s;
+}
+.btn-regresar:hover .arrow-circle { transform: translateX(-3px); }
+
+/* ── AJUSTE STOCK ── */
+.ajuste-wrap {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 16px 22px;
+    background: #f8faff;
+    border-top: 1px solid #e2e8f0;
+}
+.ajuste-wrap select, .ajuste-wrap input {
+    padding: 8px 12px; border: 1.5px solid #e2e8f0;
+    border-radius: 7px; font-size: 13px; width: auto; margin: 0;
+}
+
+/* ── FECHA HIGHLIGHT ── */
+.fecha-chip {
+    display: inline-block;
+    background: #eef2ff;
+    color: #3730a3;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <img src="img/logoitla.png" class="logo" alt="Logo ITLA">
+</header>
+
+<div class="titulo-header">
+    <h1>📋 Rentas — Tiempo Real e Historial</h1>
+</div>
+
+<!-- NAV -->
+<div class="nav-back-wrapper">
+    <a href="rentas.html" class="btn-regresar">
+        <span class="arrow-circle">&#8592;</span>
+        Volver a Registro de Rentas
+    </a>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+    <button class="tab-btn active" onclick="cambiarTab('live', this)">
+        <span class="live-dot"></span> Tiempo Real
+    </button>
+    <button class="tab-btn" onclick="cambiarTab('historial', this)">
+        🗂️ Historial de Rentas
+    </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: TIEMPO REAL
+══════════════════════════════════════ -->
+<div id="tab-live" class="tab-panel active">
+<div class="section-wrap">
+
+    <!-- RENTAS HOY -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-left">
+                <span class="live-dot"></span>
+                Rentas Activas — Hoy
+            </div>
+            <span class="live-badge" id="contadorLive">Cargando...</span>
+        </div>
+        <div class="table-scroll">
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Equipos</th>
+                        <th>Identificación</th>
+                        <th>Aula</th>
+                        <th>Horas</th>
+                        <th>Hora Registro</th>
+                        <th>Registrado por</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaRentas"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SOLICITUDES ONLINE -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-left">📨 Solicitudes Online Pendientes</div>
+        </div>
+        <div class="table-scroll">
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Equipo</th>
+                        <th>Cantidad</th>
+                        <th>Aula</th>
+                        <th>Horas</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaSolicitudes"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- AJUSTE INVENTARIO -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-left">📦 Ajuste Rápido de Inventario</div>
+            <button class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.4);font-size:12px;" onclick="toggleAjuste()">
+                Mostrar / Ocultar
+            </button>
+        </div>
+        <div id="ajusteStock" style="display:none;">
+            <div class="ajuste-wrap">
+                <select id="equipoAjuste"></select>
+                <input type="number" id="cantidadAjuste" placeholder="Cantidad (+ para agregar, - para restar)" style="width:280px;">
+                <button class="btn btn-primary" onclick="aplicarAjuste()">Aplicar Ajuste</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: HISTORIAL
+══════════════════════════════════════ -->
+<div id="tab-historial" class="tab-panel">
+<div class="section-wrap">
+
+    <!-- FILTROS -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-left">🔍 Filtros de Búsqueda</div>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border:none;" onclick="limpiarFiltros()">
+                ✕ Limpiar filtros
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="filtros-grid">
+                <div class="field">
+                    <label>Fecha desde</label>
+                    <input type="date" id="f-desde">
+                </div>
+                <div class="field">
+                    <label>Fecha hasta</label>
+                    <input type="date" id="f-hasta">
+                </div>
+                <div class="field">
+                    <label>Estado</label>
+                    <select id="f-estado">
+                        <option value="">Todos</option>
+                        <option value="Activa">Activa</option>
+                        <option value="Devuelta">Devuelta</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Buscar (nombre, aula, usuario…)</label>
+                    <input type="text" id="f-buscar" placeholder="Ej: García, A-203, soporte1">
+                </div>
+                <div class="field" style="justify-content:flex-end;">
+                    <button class="btn btn-primary" onclick="buscarHistorial(1)" style="width:100%;">
+                        🔍 Buscar
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACCESOS RÁPIDOS -->
+            <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+                <span style="font-size:12px;color:#718096;align-self:center;">Acceso rápido:</span>
+                <button class="btn btn-sm btn-outline" onclick="filtroRapido('hoy')">Hoy</button>
+                <button class="btn btn-sm btn-outline" onclick="filtroRapido('ayer')">Ayer</button>
+                <button class="btn btn-sm btn-outline" onclick="filtroRapido('semana')">Esta semana</button>
+                <button class="btn btn-sm btn-outline" onclick="filtroRapido('mes')">Este mes</button>
+                <button class="btn btn-sm btn-outline" onclick="filtroRapido('todo')">Todo el historial</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="card" id="card-resultados">
+        <div class="card-header">
+            <div class="card-header-left" id="titulo-resultados">📋 Resultados</div>
+        </div>
+
+        <!-- STATS -->
+        <div class="card-body" style="padding-bottom:0;" id="stats-wrap" style="display:none;">
+            <div class="stats-row" id="stats-row"></div>
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-scroll">
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Equipos</th>
+                        <th>Identificación</th>
+                        <th>Aula</th>
+                        <th>Horas</th>
+                        <th>Hora</th>
+                        <th>Registrado por</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaHistorial">
+                    <tr>
+                        <td colspan="10">
+                            <div class="empty-state">
+                                <div class="icon">🗂️</div>
+                                Usa los filtros arriba para explorar el historial de rentas.
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINACIÓN -->
+        <div class="paginacion" id="paginacion" style="display:none;">
+            <span class="paginacion-info" id="pag-info"></span>
+            <div class="paginacion-btns" id="pag-btns"></div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="js/script.js"></script>
+<script>
+
+/* ── TABS ── */
+function cambiarTab(nombre, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + nombre).classList.add('active');
+    btn.classList.add('active');
+}
+
+/* ── AJUSTE INVENTARIO TOGGLE ── */
+function toggleAjuste() {
+    const el = document.getElementById('ajusteStock');
+    const visible = el.style.display !== 'none';
+    el.style.display = visible ? 'none' : 'block';
+    if (!visible) mostrarAjusteStock();
+}
+
+/* ── LIMPIAR FILTROS ── */
+function limpiarFiltros() {
+    document.getElementById('f-desde').value  = '';
+    document.getElementById('f-hasta').value  = '';
+    document.getElementById('f-estado').value = '';
+    document.getElementById('f-buscar').value = '';
+    document.getElementById('tablaHistorial').innerHTML = `
+        <tr><td colspan="10">
+            <div class="empty-state">
+                <div class="icon">🗂️</div>
+                Usa los filtros arriba para explorar el historial de rentas.
+            </div>
+        </td></tr>`;
+    document.getElementById('paginacion').style.display = 'none';
+    document.getElementById('stats-wrap').style.display = 'none';
+    document.getElementById('titulo-resultados').textContent = '📋 Resultados';
+}
+
+/* ── FILTROS RÁPIDOS ── */
+function filtroRapido(periodo) {
+    const hoy   = new Date();
+    const fmt   = d => d.toISOString().split('T')[0];
+    const ayer  = new Date(hoy); ayer.setDate(hoy.getDate() - 1);
+    const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
+    const mes1  = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+    document.getElementById('f-estado').value = '';
+    document.getElementById('f-buscar').value = '';
+
+    if (periodo === 'hoy')    { document.getElementById('f-desde').value = fmt(hoy);   document.getElementById('f-hasta').value = fmt(hoy); }
+    if (periodo === 'ayer')   { document.getElementById('f-desde').value = fmt(ayer);  document.getElementById('f-hasta').value = fmt(ayer); }
+    if (periodo === 'semana') { document.getElementById('f-desde').value = fmt(lunes); document.getElementById('f-hasta').value = fmt(hoy); }
+    if (periodo === 'mes')    { document.getElementById('f-desde').value = fmt(mes1);  document.getElementById('f-hasta').value = fmt(hoy); }
+    if (periodo === 'todo')   { document.getElementById('f-desde').value = '';         document.getElementById('f-hasta').value = ''; }
+
+    buscarHistorial(1);
+}
+
+/* ── BUSCAR HISTORIAL ── */
+let paginaActual = 1;
+
+async function buscarHistorial(pagina) {
+    paginaActual = pagina;
+    const tabla = document.getElementById('tablaHistorial');
+    tabla.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">⏳</div>Cargando...</div></td></tr>`;
+    document.getElementById('paginacion').style.display = 'none';
+
+    const desde  = document.getElementById('f-desde').value;
+    const hasta  = document.getElementById('f-hasta').value;
+    const estado = document.getElementById('f-estado').value;
+    const buscar = document.getElementById('f-buscar').value.trim();
+
+    const params = new URLSearchParams({ action: 'historial', pagina });
+    if (desde)  params.append('desde',  desde);
+    if (hasta)  params.append('hasta',  hasta);
+    if (estado) params.append('estado', estado);
+    if (buscar) params.append('buscar', buscar);
+
+    try {
+        const res  = await fetch('api/rentas.php?' + params.toString());
+        const data = await res.json();
+
+        if (data.error) {
+            tabla.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">❌</div>${data.error}</div></td></tr>`;
+            return;
+        }
+
+        // Título dinámico
+        let tituloTexto = `📋 ${data.total} renta${data.total !== 1 ? 's' : ''} encontrada${data.total !== 1 ? 's' : ''}`;
+        if (desde || hasta) {
+            tituloTexto += ' · ';
+            if (desde && hasta && desde === hasta) tituloTexto += desde;
+            else if (desde && hasta) tituloTexto += `${desde} → ${hasta}`;
+            else if (desde) tituloTexto += `desde ${desde}`;
+            else tituloTexto += `hasta ${hasta}`;
+        }
+        document.getElementById('titulo-resultados').textContent = tituloTexto;
+
+        // Stats
+        const activas   = data.rentas.filter(r => r.estado === 'Activa').length;
+        const devueltas = data.rentas.filter(r => r.estado === 'Devuelta').length;
+
+        document.getElementById('stats-wrap').style.display = 'block';
+        document.getElementById('stats-row').innerHTML = `
+            <div class="stat-pill">Total en página <b>${data.rentas.length}</b></div>
+            <div class="stat-pill">Total general <b>${data.total}</b></div>
+            <div class="stat-pill" style="background:#fef9c3;">🟡 Activas <b>${activas}</b></div>
+            <div class="stat-pill" style="background:#dcfce7;">🟢 Devueltas <b>${devueltas}</b></div>
+        `;
+
+        if (!data.rentas.length) {
+            tabla.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">🔍</div>No se encontraron rentas con esos criterios.</div></td></tr>`;
+            return;
+        }
+
+        // Tabla
+        let html = '';
+        data.rentas.forEach(r => {
+            const equiposTexto = Array.isArray(r.equipos) ? r.equipos.join(', ') : r.equipos;
+            const fecha = r.creado_en
+                ? `<span class="fecha-chip">${new Date(r.creado_en).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })}</span>`
+                : '—';
+            const badge = r.estado === 'Activa'
+                ? `<span class="badge badge-activa">Activa</span>`
+                : `<span class="badge badge-devuelta">Devuelta</span>`;
+
+            html += `<tr class="${r.estado === 'Activa' ? 'activa' : 'devuelta'}">
+                <td><b>#${r.id}</b></td>
+                <td>${fecha}</td>
+                <td>${r.nombre}</td>
+                <td style="max-width:200px;white-space:normal;">${equiposTexto}</td>
+                <td>${r.identificacion || '—'}</td>
+                <td>${r.aula}</td>
+                <td>${r.horas}h</td>
+                <td>${r.hora_registro}</td>
+                <td>${r.usuario_registro || '—'}</td>
+                <td>${badge}</td>
+            </tr>`;
+        });
+        tabla.innerHTML = html;
+
+        // Paginación
+        renderPaginacion(data);
+
+    } catch (err) {
+        tabla.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="icon">❌</div>Error de conexión.</div></td></tr>`;
+    }
+}
+
+/* ── PAGINACIÓN ── */
+function renderPaginacion(data) {
+    const wrap = document.getElementById('paginacion');
+
+    if (data.paginas <= 1) { wrap.style.display = 'none'; return; }
+
+    const inicio = (data.pagina - 1) * data.porPagina + 1;
+    const fin    = Math.min(data.pagina * data.porPagina, data.total);
+
+    document.getElementById('pag-info').textContent = `Mostrando ${inicio}–${fin} de ${data.total} registros`;
+
+    // Generar botones: anterior, páginas cercanas, siguiente
+    let btns = '';
+    btns += `<button class="pag-btn" onclick="buscarHistorial(${data.pagina - 1})" ${data.pagina === 1 ? 'disabled' : ''}>&#8592;</button>`;
+
+    const rango = 2;
+    let inicio2 = Math.max(1, data.pagina - rango);
+    let fin2    = Math.min(data.paginas, data.pagina + rango);
+
+    if (inicio2 > 1) btns += `<button class="pag-btn" onclick="buscarHistorial(1)">1</button>${inicio2 > 2 ? '<span style="padding:0 4px;color:#a0aec0">…</span>' : ''}`;
+
+    for (let i = inicio2; i <= fin2; i++) {
+        btns += `<button class="pag-btn ${i === data.pagina ? 'active' : ''}" onclick="buscarHistorial(${i})">${i}</button>`;
+    }
+
+    if (fin2 < data.paginas) btns += `${fin2 < data.paginas - 1 ? '<span style="padding:0 4px;color:#a0aec0">…</span>' : ''}<button class="pag-btn" onclick="buscarHistorial(${data.paginas})">${data.paginas}</button>`;
+
+    btns += `<button class="pag-btn" onclick="buscarHistorial(${data.pagina + 1})" ${data.pagina === data.paginas ? 'disabled' : ''}>&#8594;</button>`;
+
+    document.getElementById('pag-btns').innerHTML = btns;
+    wrap.style.display = 'flex';
+}
+
+/* ── ENTER en buscar ── */
+document.getElementById('f-buscar').addEventListener('keydown', e => {
+    if (e.key === 'Enter') buscarHistorial(1);
+});
+
+/* ── CARGA INICIAL ── */
+document.addEventListener("DOMContentLoaded", function () {
+    cargarTabla();
+    cargarSolicitudes();
+    setInterval(() => {
+        cargarTabla();
+        cargarSolicitudes();
+    }, 3000);
+});
+</script>
+
+</body>
+</html>

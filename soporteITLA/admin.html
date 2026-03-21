@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Administración - ITLA</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; }
+body { background: #f0f4f9; font-family: Arial, sans-serif; margin: 0; }
+
+/* TABS */
+.tabs-wrapper {
+    display: flex;
+    gap: 6px;
+    padding: 20px 30px 0;
+    background: #fff;
+    border-bottom: 2px solid #e2e8f0;
+}
+.tab-btn {
+    padding: 11px 26px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: #e8edf5;
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+}
+.tab-btn:hover { background: #d0d9ec; }
+.tab-btn.active { background: #0a2a5e; color: #fff; border-bottom: 3px solid #ffcc00; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* GRID */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    padding: 24px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+@media (max-width: 860px) { .admin-grid { grid-template-columns: 1fr; } }
+
+/* CARDS */
+.card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; }
+.card-header {
+    background: linear-gradient(135deg, #0a2a5e, #1a52a8);
+    color: #fff;
+    padding: 16px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card-body { padding: 22px; }
+
+/* FIELDS */
+.field { margin-bottom: 14px; }
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+.field input, .field select {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 7px; font-size: 14px;
+    outline: none; margin: 0;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus, .field select:focus {
+    border-color: #1a52a8;
+    box-shadow: 0 0 0 3px rgba(26,82,168,0.12);
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 20px; border: none; border-radius: 7px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: #0a2a5e; color: #fff; width: 100%; justify-content: center; margin-top: 6px; }
+.btn-primary:hover { background: #1a52a8; }
+.btn-warning { background: #f59e0b; color: #fff; padding: 6px 12px; font-size: 12px; }
+.btn-warning:hover { background: #d97706; }
+.btn-danger  { background: #ef4444; color: #fff; padding: 6px 12px; font-size: 12px; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #10b981; color: #fff; padding: 6px 12px; font-size: 12px; }
+.btn-success:hover { background: #059669; }
+.btn-ghost { background: transparent; color: #0a2a5e; border: 1.5px solid #0a2a5e; padding: 6px 12px; font-size: 12px; }
+.btn-ghost:hover { background: #0a2a5e; color: #fff; }
+
+/* TABLE */
+.admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.admin-table th {
+    background: #0c2340; color: #fff;
+    padding: 10px 12px; text-align: left;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.admin-table td { padding: 10px 12px; border-bottom: 1px solid #f0f4f9; vertical-align: middle; }
+.admin-table tr:hover td { background: #f8faff; }
+.admin-table tr:last-child td { border-bottom: none; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+.badge-soporte        { background: #dbeafe; color: #1e40af; }
+.badge-alumno         { background: #dcfce7; color: #166534; }
+.badge-administrativo { background: #fef9c3; color: #854d0e; }
+.badge-stock-ok       { background: #dcfce7; color: #166534; }
+.badge-stock-low      { background: #fef9c3; color: #854d0e; }
+.badge-stock-empty    { background: #fee2e2; color: #991b1b; }
+
+/* INLINE EDIT */
+.inline-edit { display: none; gap: 6px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+.inline-edit.visible { display: flex; }
+.inline-edit input { padding: 5px 8px; border: 1.5px solid #1a52a8; border-radius: 6px; font-size: 13px; width: 110px; outline: none; margin: 0; }
+
+/* TOAST */
+#toast {
+    position: fixed; bottom: 28px; right: 28px;
+    padding: 14px 22px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; color: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    z-index: 9999; opacity: 0; transform: translateY(12px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none; max-width: 320px;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.ok   { background: #10b981; }
+#toast.err  { background: #ef4444; }
+
+/* MODAL */
+.modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 1000;
+    justify-content: center; align-items: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 14px; padding: 30px; width: 340px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+.modal-box h3 { margin: 0 0 20px; color: #0a2a5e; font-size: 16px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+/* NAV */
+.nav-back-wrapper { display: flex; align-items: center; padding: 12px 30px; background: #fff; border-bottom: 1px solid #e2e8f0; gap: 16px; }
+.btn-regresar {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #0a2a5e, #1a52a8);
+    color: white !important; text-decoration: none;
+    padding: 9px 20px; border-radius: 50px;
+    font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(10,42,94,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-regresar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,42,94,0.4); }
+.nav-title { font-size: 13px; color: #718096; }
+.nav-title b { color: #0a2a5e; }
+
+/* MISC */
+.empty-state { text-align: center; padding: 40px 20px; color: #a0aec0; font-size: 14px; }
+.empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
+.divider { border: none; border-top: 1px solid #e2e8f0; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<header>
+    <img src="img/logoitla.png" class="logo" alt="Logo ITLA">
+</header>
+
+<div class="barra-sesion">
+    <span>Usuario: <b id="usuarioActivo"></b></span>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+</div>
+
+<div class="titulo-header">
+    <h1>⚙️ Panel de Administración</h1>
+</div>
+
+<div class="nav-back-wrapper">
+    <a href="rentas.html" class="btn-regresar">&#8592; Volver al sistema</a>
+    <span class="nav-title">Gestiona <b>usuarios</b> e <b>inventario</b> del sistema</span>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+    <button class="tab-btn active" onclick="cambiarTab('usuarios', this)">👥 Usuarios</button>
+    <button class="tab-btn"       onclick="cambiarTab('stock', this)">📦 Inventario</button>
+</div>
+
+<!-- TAB USUARIOS -->
+<div id="tab-usuarios" class="tab-panel active">
+<div class="admin-grid">
+
+    <div class="card">
+        <div class="card-header">➕ Agregar Usuario</div>
+        <div class="card-body">
+            <div class="field">
+                <label>Nombre de usuario</label>
+                <input type="text" id="nu-usuario" placeholder="Ej: profe_garcia">
+            </div>
+            <div class="field">
+                <label>Contraseña</label>
+                <input type="password" id="nu-password" placeholder="Mínimo 6 caracteres">
+            </div>
+            <div class="field">
+                <label>Confirmar contraseña</label>
+                <input type="password" id="nu-password2" placeholder="Repite la contraseña">
+            </div>
+            <div class="field">
+                <label>Tipo de usuario</label>
+                <select id="nu-tipo">
+                    <option value="alumno">Alumno</option>
+                    <option value="administrativo">Administrativo / Docente</option>
+                    <option value="soporte">Soporte Técnico</option>
+                </select>
+            </div>
+            <hr class="divider">
+            <button class="btn btn-primary" onclick="agregarUsuario()">✅ Crear Usuario</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">👥 Usuarios Registrados</div>
+        <div class="card-body" style="padding:0;">
+            <div id="usuarios-container">
+                <div class="empty-state"><div class="empty-icon">⏳</div>Cargando usuarios...</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- TAB STOCK -->
+<div id="tab-stock" class="tab-panel">
+<div class="admin-grid">
+
+    <div class="card">
+        <div class="card-header">➕ Agregar Equipo al Catálogo</div>
+        <div class="card-body">
+            <div class="field">
+                <label>Nombre del equipo</label>
+                <input type="text" id="ne-nombre" placeholder="Ej: Micrófono, Tablet...">
+            </div>
+            <div class="field">
+                <label>Cantidad inicial</label>
+                <input type="number" id="ne-cantidad" min="0" value="1">
+            </div>
+            <hr class="divider">
+            <button class="btn btn-primary" onclick="agregarEquipo()">✅ Agregar al Catálogo</button>
+            <hr class="divider" style="margin-top:24px;">
+            <p style="font-size:12px; color:#718096; margin:0;">
+                💡 <b>Tip:</b> Para modificar equipos existentes usa el botón ✏️ Editar en la tabla. Puedes cambiar el nombre y la cantidad disponible.
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">📦 Inventario Actual</div>
+        <div class="card-body" style="padding:0;">
+            <div id="stock-container">
+                <div class="empty-state"><div class="empty-icon">⏳</div>Cargando inventario...</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- MODAL CONTRASEÑA -->
+<div class="modal-overlay" id="modalPassword">
+    <div class="modal-box">
+        <h3>🔑 Cambiar Contraseña</h3>
+        <p style="font-size:13px; color:#718096; margin:0 0 16px;">
+            Usuario: <b id="modal-nombre-usuario"></b>
+        </p>
+        <input type="hidden" id="modal-user-id">
+        <div class="field">
+            <label>Nueva contraseña</label>
+            <input type="password" id="modal-nueva-pass" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="field">
+            <label>Confirmar contraseña</label>
+            <input type="password" id="modal-confirmar-pass" placeholder="Repite la contraseña">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" style="flex:1; border-radius:7px;" onclick="guardarPassword()">Guardar</button>
+            <button class="btn btn-ghost"   style="flex:1; border-radius:7px;" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/seguridad.js"></script>
+<script>
+
+/* TABS */
+function cambiarTab(nombre, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + nombre).classList.add('active');
+    btn.classList.add('active');
+    if (nombre === 'usuarios') cargarUsuarios();
+    if (nombre === 'stock')    cargarStock();
+}
+
+/* TOAST */
+function toast(msg, tipo = 'ok') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show ' + tipo;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = ''; }, 3200);
+}
+
+/* ── USUARIOS ── */
+async function cargarUsuarios() {
+    const c = document.getElementById('usuarios-container');
+    try {
+        const res  = await fetch('api/admin.php?action=usuarios');
+        const data = await res.json();
+
+        if (!data.length) {
+            c.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div>No hay usuarios registrados.</div>`;
+            return;
+        }
+
+        const badgeMap = { soporte: 'badge-soporte', alumno: 'badge-alumno', administrativo: 'badge-administrativo' };
+        const labelMap = { soporte: 'Soporte', alumno: 'Alumno', administrativo: 'Adm/Docente' };
+
+        let html = `<table class="admin-table"><thead><tr>
+            <th>Usuario</th><th>Tipo</th><th>Creado</th><th>Acciones</th>
+        </tr></thead><tbody>`;
+
+        data.forEach(u => {
+            const fecha = u.creado_en
+                ? new Date(u.creado_en).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })
+                : '—';
+            html += `<tr>
+                <td><b>${u.usuario}</b></td>
+                <td><span class="badge ${badgeMap[u.tipo] || 'badge-alumno'}">${labelMap[u.tipo] || u.tipo}</span></td>
+                <td style="font-size:12px;color:#718096;">${fecha}</td>
+                <td style="white-space:nowrap;">
+                    <button class="btn btn-warning" onclick="abrirModalPassword(${u.id},'${u.usuario}')">🔑 Contraseña</button>
+                    &nbsp;
+                    <button class="btn btn-danger"  onclick="eliminarUsuario(${u.id},'${u.usuario}')">🗑️ Eliminar</button>
+                </td>
+            </tr>`;
+        });
+
+        c.innerHTML = html + '</tbody></table>';
+
+    } catch (err) {
+        c.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div>Error al cargar usuarios.</div>`;
+    }
+}
+
+async function agregarUsuario() {
+    const usuario  = document.getElementById('nu-usuario').value.trim();
+    const password = document.getElementById('nu-password').value;
+    const pass2    = document.getElementById('nu-password2').value;
+    const tipo     = document.getElementById('nu-tipo').value;
+
+    if (!usuario || !password || !tipo) { toast('Completa todos los campos', 'err'); return; }
+    if (password.length < 6)            { toast('La contraseña debe tener al menos 6 caracteres', 'err'); return; }
+    if (password !== pass2)             { toast('Las contraseñas no coinciden', 'err'); return; }
+
+    try {
+        const res  = await fetch('api/admin.php?action=agregar_usuario', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, password, tipo })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('✅ Usuario "' + usuario + '" creado correctamente');
+        document.getElementById('nu-usuario').value   = '';
+        document.getElementById('nu-password').value  = '';
+        document.getElementById('nu-password2').value = '';
+        cargarUsuarios();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+function abrirModalPassword(id, nombre) {
+    document.getElementById('modal-user-id').value              = id;
+    document.getElementById('modal-nombre-usuario').textContent = nombre;
+    document.getElementById('modal-nueva-pass').value           = '';
+    document.getElementById('modal-confirmar-pass').value       = '';
+    document.getElementById('modalPassword').classList.add('open');
+    setTimeout(() => document.getElementById('modal-nueva-pass').focus(), 50);
+}
+
+function cerrarModal() {
+    document.getElementById('modalPassword').classList.remove('open');
+}
+
+async function guardarPassword() {
+    const id   = document.getElementById('modal-user-id').value;
+    const pass = document.getElementById('modal-nueva-pass').value;
+    const pass2= document.getElementById('modal-confirmar-pass').value;
+
+    if (!pass)           { toast('Ingresa la nueva contraseña', 'err'); return; }
+    if (pass.length < 6) { toast('Mínimo 6 caracteres', 'err'); return; }
+    if (pass !== pass2)  { toast('Las contraseñas no coinciden', 'err'); return; }
+
+    try {
+        const res  = await fetch('api/admin.php?action=cambiar_password', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: parseInt(id), password: pass })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('🔑 Contraseña actualizada correctamente');
+        cerrarModal();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+async function eliminarUsuario(id, nombre) {
+    if (!confirm(`¿Eliminar al usuario "${nombre}"?\nEsta acción no se puede deshacer.`)) return;
+
+    try {
+        const res  = await fetch('api/admin.php?action=eliminar_usuario', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('🗑️ Usuario "' + nombre + '" eliminado');
+        cargarUsuarios();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+/* ── STOCK ── */
+async function cargarStock() {
+    const c = document.getElementById('stock-container');
+    try {
+        const res  = await fetch('api/admin.php?action=stock');
+        const data = await res.json();
+
+        if (!data.length) {
+            c.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div>No hay equipos en el inventario.</div>`;
+            return;
+        }
+
+        let html = `<table class="admin-table"><thead><tr>
+            <th>Equipo</th><th>Disponible</th><th>Acciones</th>
+        </tr></thead><tbody>`;
+
+        data.forEach(item => {
+            const bc = item.cantidad === 0 ? 'badge-stock-empty' : item.cantidad <= 2 ? 'badge-stock-low' : 'badge-stock-ok';
+            html += `<tr id="fila-${item.id}">
+                <td>
+                    <b id="nombre-${item.id}">${item.equipo}</b>
+                    <div class="inline-edit" id="edit-${item.id}">
+                        <input type="text"   id="edit-nombre-${item.id}"   value="${item.equipo}"   placeholder="Nombre">
+                        <input type="number" id="edit-cantidad-${item.id}" value="${item.cantidad}" placeholder="Cant." style="width:70px;">
+                        <button class="btn btn-success" onclick="guardarEquipo(${item.id})">💾 Guardar</button>
+                        <button class="btn btn-ghost"   onclick="cancelarEdicion(${item.id})">✕</button>
+                    </div>
+                </td>
+                <td><span class="badge ${bc}">${item.cantidad} uds.</span></td>
+                <td style="white-space:nowrap;">
+                    <button class="btn btn-warning" onclick="editarEquipo(${item.id})">✏️ Editar</button>
+                    &nbsp;
+                    <button class="btn btn-danger"  onclick="eliminarEquipo(${item.id},'${item.equipo}')">🗑️ Eliminar</button>
+                </td>
+            </tr>`;
+        });
+
+        c.innerHTML = html + '</tbody></table>';
+
+    } catch (err) {
+        c.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div>Error al cargar inventario.</div>`;
+    }
+}
+
+async function agregarEquipo() {
+    const nombre   = document.getElementById('ne-nombre').value.trim();
+    const cantidad = parseInt(document.getElementById('ne-cantidad').value);
+
+    if (!nombre)                         { toast('Escribe el nombre del equipo', 'err'); return; }
+    if (isNaN(cantidad) || cantidad < 0) { toast('Ingresa una cantidad válida', 'err'); return; }
+
+    try {
+        const res  = await fetch('api/admin.php?action=agregar_equipo', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ equipo: nombre, cantidad })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('✅ "' + nombre + '" agregado al catálogo');
+        document.getElementById('ne-nombre').value   = '';
+        document.getElementById('ne-cantidad').value = '1';
+        cargarStock();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+function editarEquipo(id) {
+    document.getElementById('edit-' + id).classList.add('visible');
+}
+
+function cancelarEdicion(id) {
+    document.getElementById('edit-' + id).classList.remove('visible');
+}
+
+async function guardarEquipo(id) {
+    const nombre   = document.getElementById('edit-nombre-'   + id).value.trim();
+    const cantidad = parseInt(document.getElementById('edit-cantidad-' + id).value);
+
+    if (!nombre)                         { toast('El nombre no puede estar vacío', 'err'); return; }
+    if (isNaN(cantidad) || cantidad < 0) { toast('Cantidad inválida', 'err'); return; }
+
+    try {
+        const res  = await fetch('api/admin.php?action=actualizar_equipo', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, equipo: nombre, cantidad })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('✅ "' + nombre + '" actualizado correctamente');
+        cargarStock();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+async function eliminarEquipo(id, nombre) {
+    if (!confirm(`¿Eliminar "${nombre}" del catálogo?\nEsta acción no se puede deshacer.`)) return;
+
+    try {
+        const res  = await fetch('api/admin.php?action=eliminar_equipo', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.error) { toast('Error: ' + data.error, 'err'); return; }
+
+        toast('🗑️ "' + nombre + '" eliminado del catálogo');
+        cargarStock();
+
+    } catch (err) { toast('Error de conexión', 'err'); }
+}
+
+/* CERRAR MODAL CON ESC O CLICK FUERA */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+document.getElementById('modalPassword').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+});
+
+/* CARGA INICIAL */
+document.addEventListener('DOMContentLoaded', cargarUsuarios);
+
+</script>
+</body>
+</html>
