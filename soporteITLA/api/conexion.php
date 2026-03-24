@@ -7,7 +7,7 @@ $usuario = "luisfer";
 $password = "copcal";
 $base_datos = "itla_rentas";
 
-include("/var/www/proyectos/soporteITLA/api/dbconection.php");
+include("/var/www/proyects/soporteITLA/api/dbconection.php");
 
 if (!isset($conn) || !$conn) {
     die(json_encode([
