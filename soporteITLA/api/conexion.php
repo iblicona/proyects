@@ -6,7 +6,7 @@ $usuario = "luisfer";
 $password = "copcal";
 $base_datos = "itla_rentas";
 
-// Conexión correcta
+
 $conn = new mysqli($host, $usuario, $password, $base_datos);
 
 if ($conn->connect_error) {
