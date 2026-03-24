@@ -1,5 +1,6 @@
 <?php
-include("/var/www/projects/api/dbconnection.php");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 function getDB(): PDO {
     static $pdo = null;
@@ -27,4 +28,7 @@ function getDB(): PDO {
     }
     return $pdo;
 }
+
+$conn->set_charset("utf8");
+
 ?>
