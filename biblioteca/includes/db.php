@@ -1,18 +1,17 @@
 <?php
-// ── Configuración de la base de datos ──────────────────────────────────────
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');        // cambia si tu usuario es diferente
-define('DB_PASS', 'root');            // cambia si tienes contraseña
-define('DB_NAME', 'biblioteca_itla');
+include("/var/www/projects/api/dbconnection.php");
 
 function getDB(): PDO {
     static $pdo = null;
+    
     if ($pdo === null) {
+        global $host, $usuario, $password, $base_datos;
+
         try {
             $pdo = new PDO(
-                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-                DB_USER,
-                DB_PASS,
+                "mysql:host=" . $host . ";dbname=" . $base_datos . ";charset=utf8mb4",
+                $usuario,
+                $password,
                 [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -26,3 +25,4 @@ function getDB(): PDO {
     }
     return $pdo;
 }
+?>
