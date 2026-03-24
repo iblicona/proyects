@@ -1,5 +1,4 @@
 <?php
-// ── Sesión y autenticación ─────────────────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -22,7 +21,7 @@ function login(string $usuario, string $pass): bool {
     $stmt->execute([$usuario]);
     $row  = $stmt->fetch();
 
-    if ($row && password_verify($pass, $row['password'])) {
+    if ($row && $pass === $row['password']) { 
         $_SESSION['admin_id']      = $row['id'];
         $_SESSION['admin_usuario'] = $usuario;
         return true;
