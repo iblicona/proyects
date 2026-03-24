@@ -3,9 +3,11 @@ include("/var/www/projects/api/dbconnection.php");
 
 function getDB(): PDO {
     static $pdo = null;
-    
     if ($pdo === null) {
-        global $host, $usuario, $password, $base_datos;
+        $host       = "endpoint-rds.amazonaws.com";
+        $usuario    = "axel";        
+        $password   = "admin1234";   
+        $base_datos = "biblioteca";  
 
         try {
             $pdo = new PDO(
@@ -14,13 +16,13 @@ function getDB(): PDO {
                 $password,
                 [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES   => false,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,      
+                    PDO::ATTR_EMULATE_PREPARES   => false,                 
                 ]
             );
         } catch (PDOException $e) {
             http_response_code(500);
-            die(json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]));
+            die("Error: " . $e->getMessage());
         }
     }
     return $pdo;
