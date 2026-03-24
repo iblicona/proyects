@@ -1,5 +1,5 @@
-// URL base que te dará la persona encargada del Backend (ej. http://localhost:5000/api)
-const API_URL = 'AQUI_VA_LA_URL_DEL_BACKEND'; 
+// URL base del backend PHP en el servidor
+const API_URL = 'http://34.226.236.94/portones/api';
 
 // Función genérica para enviar datos (POST) a la base de datos
 async function enviarDatos(endpoint, datos) {
