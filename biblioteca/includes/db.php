@@ -4,7 +4,7 @@ include("/var/www/projects/api/dbconnection.php");
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
-        $host       = "endpoint-rds.amazonaws.com";
+        $host       = "production.ccjgeakiwlqp.us-east-1.rds.amazonaws.com"; 
         $usuario    = "axel";        
         $password   = "admin1234";   
         $base_datos = "biblioteca";  
@@ -22,7 +22,7 @@ function getDB(): PDO {
             );
         } catch (PDOException $e) {
             http_response_code(500);
-            die("Error: " . $e->getMessage());
+            die("Error de conexión: " . $e->getMessage()); 
         }
     }
     return $pdo;
