@@ -1,16 +1,21 @@
-let solicitudes = JSON.parse(localStorage.getItem("solicitudes")) || [];
+async function enviarSolicitud() {
 
-function enviarSolicitud() {
-
-    const nombre = document.getElementById("nombre").value;
-    const tipoUsuario = document.getElementById("tipoUsuario").value;
-    const equipo = document.getElementById("equipo").value;
+    const nombre   = document.getElementById("nombre").value;
+    const equipo   = document.getElementById("equipo").value;
     const cantidad = parseInt(document.getElementById("cantidad").value);
-    const aula = document.getElementById("aula").value;
-    const horas = parseInt(document.getElementById("horas").value);
+    const aula     = document.getElementById("aula").value;
+    const horas    = parseInt(document.getElementById("horas").value);
+    const mensaje  = document.getElementById("mensaje");
 
-    const mensaje = document.getElementById("mensaje");
     mensaje.style.color = "red";
+
+    // Verificar sesión
+    const sesion = JSON.parse(sessionStorage.getItem("sesionActiva"));
+
+    if (!sesion) {
+        window.location.href = "index.html";
+        return;
+    }
 
     if (!nombre || !aula || !horas) {
         mensaje.innerText = "Faltan datos obligatorios.";
@@ -18,25 +23,37 @@ function enviarSolicitud() {
     }
 
     if (horas > 4) {
-        mensaje.innerText = "El periodo máximo permitido es de 4 horas.";
+        mensaje.innerText = "El período máximo permitido es de 4 horas.";
         return;
     }
 
-    solicitudes.push({
-        id: Date.now(),
-        nombre,
-        tipoUsuario,
-        equipo,
-        cantidad,
-        aula,
-        horas,
-        estado: "Pendiente"
-    });
+    try {
+        const response = await fetch("api/solicitudes.php?action=enviar", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({
+                nombre,
+                tipoUsuario: sesion.tipo,
+                equipo,
+                cantidad,
+                aula,
+                horas
+            })
+        });
 
-    localStorage.setItem("solicitudes", JSON.stringify(solicitudes));
+        const data = await response.json();
 
-    mensaje.style.color = "green";
-    mensaje.innerText = "Solicitud enviada correctamente. Pendiente de aprobación.";
+        if (data.error) {
+            mensaje.innerText = "Error: " + data.error;
+            return;
+        }
 
-    document.getElementById("formSolicitud").reset();
+        mensaje.style.color = "green";
+        mensaje.innerText   = "✅ Solicitud enviada correctamente. Pendiente de aprobación.";
+
+        document.getElementById("formSolicitud").reset();
+
+    } catch (err) {
+        mensaje.innerText = "Error de conexión con el servidor: " + err.message;
+    }
 }
