@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 3. Conexión a la BD
-require_once('dbConnection.php');
+require_once('../../api/dbConection.php');
 // $conn es el objeto mysqli expuesto por dbConnection.php
 
 // 4. Leer JSON del body

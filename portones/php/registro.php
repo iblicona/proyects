@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-require_once('dbConnection.php');
+require_once('../../api/dbConection.php');
 
 $body = json_decode(file_get_contents('php://input'), true);
 
