@@ -8,30 +8,36 @@ body {
   min-height: 100vh;
   transition: margin-right 0.3s ease;
 }
+
 body.chat-abierto {
   margin-right: 380px;
 }
+
 .contenedor {
   width: 100%;
   max-width: 500px;
   padding: 20px;
 }
+
 .form-box {
   background: rgba(255, 255, 255, 0.92);
   padding: 35px 30px;
   border-radius: 14px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
+
 h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #3b383f;
 }
+
 label {
   font-weight: 600;
   margin-top: 12px;
   display: block;
 }
+
 input, select {
   width: 100%;
   padding: 10px;
@@ -40,9 +46,11 @@ input, select {
   border: 1px solid #999;
   font-size: 14px;
 }
+
 input[type="file"] {
   background: #f2f2f2;
 }
+
 .form-box button {
   width: 100%;
   margin-top: 20px;
@@ -55,40 +63,11 @@ input[type="file"] {
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
-}
-.form-box button:hover {
-  background: linear-gradient(135deg, #4e2c1e, #3c1f13);
-}
-
-/* ── Alertas PHP ──────────────────────────────────────────── */
-.alerta {
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: 0.93em;
-  line-height: 1.5;
-}
-.alerta-exito {
-  background: #e8f5e9;
-  color: #1b5e20;
-  border: 1px solid #a5d6a7;
-}
-.alerta-error {
-  background: #fdecea;
-  color: #b71c1c;
-  border: 1px solid #ef9a9a;
+  position: relative;
+  z-index: 50;
 }
 
-/* ── Feedback correo ──────────────────────────────────────── */
-.feedback {
-  font-size: 12px;
-  margin-top: 3px;
-  display: block;
-}
-.feedback.ok    { color: #2e7d32; }
-.feedback.error { color: #c62828; }
-
-/* ── Botón águila ─────────────────────────────────────────── */
+/* 🦅 BOTÓN ÁGUILA TIPO CLIPPY */
 .ia-mascota {
   position: fixed;
   bottom: 90px;
@@ -104,16 +83,25 @@ input[type="file"] {
   z-index: 10;
   animation: flotar 2s infinite ease-in-out;
 }
-.ia-mascota img { width: 40px; height: 40px; }
-.ia-mascota span { font-size: 13px; color: #333; font-weight: 600; }
+
+.ia-mascota img {
+  width: 40px;
+  height: 40px;
+}
+
+.ia-mascota span {
+  font-size: 13px;
+  color: #333;
+  font-weight: 600;
+}
 
 @keyframes flotar {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-4px); }
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
   100% { transform: translateY(0px); }
 }
 
-/* ── Panel IA ─────────────────────────────────────────────── */
+/* 🤖 PANEL IA */
 .ia-panel {
   position: fixed;
   top: 0;
@@ -127,8 +115,12 @@ input[type="file"] {
   z-index: 999;
   transition: right 0.35s ease;
 }
-.ia-panel.abierto { right: 0; }
 
+.ia-panel.abierto {
+  right: 0;
+}
+
+/* HEADER */
 .ia-header {
   background: linear-gradient(135deg, #3b383f, #2a272d);
   color: white;
@@ -138,7 +130,12 @@ input[type="file"] {
   gap: 10px;
   font-size: 16px;
 }
-.ia-header img { width: 34px; height: 34px; }
+
+.ia-header img {
+  width: 34px;
+  height: 34px;
+}
+
 .ia-header button {
   margin-left: auto;
   background: none;
@@ -148,6 +145,7 @@ input[type="file"] {
   cursor: pointer;
 }
 
+/* CHAT */
 .ia-chat {
   flex: 1;
   padding: 15px;
@@ -158,14 +156,26 @@ input[type="file"] {
   gap: 10px;
 }
 
+/* MENSAJES */
 .ia-msg {
   display: flex;
   flex-direction: column;
   max-width: 80%;
 }
-.ia-bot  { align-self: flex-start; align-items: flex-start; }
-.ia-user { align-self: flex-end;   align-items: flex-end; }
 
+/* BOT A LA IZQUIERDA */
+.ia-bot {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+/* USUARIO A LA DERECHA */
+.ia-user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+/* GLOBOS */
 .globo {
   padding: 10px 14px;
   border-radius: 14px;
@@ -173,11 +183,25 @@ input[type="file"] {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   line-height: 1.4;
 }
-.ia-bot  .globo { background: white;   color: #333; }
-.ia-user .globo { background: #3b383f; color: white; }
 
-.hora { font-size: 10px; color: #666; margin-top: 2px; }
+.ia-bot .globo {
+  background: white;
+  color: #333;
+}
 
+.ia-user .globo {
+  background: #3b383f;
+  color: white;
+}
+
+/* HORA */
+.hora {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* INPUT CHAT */
 .ia-input {
   display: flex;
   padding: 12px;
@@ -185,6 +209,7 @@ input[type="file"] {
   background: #fff;
   gap: 8px;
 }
+
 .ia-input input {
   flex: 1;
   border: 1px solid #ccc;
@@ -193,6 +218,7 @@ input[type="file"] {
   font-size: 14px;
   outline: none;
 }
+
 .ia-input button {
   border: none;
   background: #3b383f;
