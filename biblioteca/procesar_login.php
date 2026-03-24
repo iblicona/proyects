@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/auth.php';
+require("includes/db.php")
 
 if (estaLogueado()) {
     header('Location: admin.php');
