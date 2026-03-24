@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("*/pruebaConexion.php");
+include("pruebaConexion.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
