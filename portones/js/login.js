@@ -2,29 +2,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.getElementById('formLogin');
 
     if (formLogin) {
-        formLogin.addEventListener('submit', (e) => {
-            e.preventDefault(); // Evita que la página recargue
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-            /* ====================================================================
-            ¡ATENCIÓN BACKEND (AWS)!
-            Aquí se debe hacer un fetch (POST) al endpoint de autenticación.
-            Validar contra la tabla 'usuario' (username, password, rol).
-            El backend debe devolver un Token JWT y el 'rol' del usuario.
-            ==================================================================== */
+            if (!username || !password) {
+                alert('Por favor ingresa usuario y contraseña.');
+                return;
+            }
 
-            console.log(`Intentando acceder con usuario: ${user}`);
-            
-            // Simulación: Aceptamos cualquier usuario y le asignamos rol 'admin'
-            // En un futuro, esto se guarda desde la respuesta real de la base de datos
-            localStorage.setItem('sesion_activa', 'true');
-            localStorage.setItem('usuario_nombre', user);
-            localStorage.setItem('usuario_rol', 'admin'); // Valores posibles de tu BD: admin, control, consulta
+            // Deshabilitar botón mientras se procesa
+            const btnSubmit = formLogin.querySelector('[type="submit"]');
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Verificando...';
 
-            // Redirigimos al menú
-            window.location.href = 'paginas/menu.html';
+            try {
+                // Llamada real al backend PHP
+                const respuesta = await enviarDatos('login.php', { username, password });
+
+                if (respuesta && respuesta.ok) {
+                    // Guardar sesión en localStorage
+                    localStorage.setItem('sesion_activa', 'true');
+                    localStorage.setItem('usuario_nombre', respuesta.nombre);
+                    localStorage.setItem('usuario_rol', respuesta.rol);
+
+                    // Redirigir al menú
+                    window.location.href = 'paginas/menu.html';
+                } else {
+                    const msg = respuesta ? respuesta.mensaje : 'Error desconocido.';
+                    alert('Acceso denegado: ' + msg);
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = 'Iniciar Sesión';
+                }
+            } catch (err) {
+                alert('No se pudo conectar con el servidor. Intenta más tarde.');
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = 'Iniciar Sesión';
+            }
         });
     }
 });

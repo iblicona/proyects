@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-        <link rel="stylesheet" href="styles.css">
-        <title>Sistema de Acceso Escolar ITLA</title>
-    </head>
-    <body class="bg-light d-flex flex-column min-vh-100">
-        <div class="container my-auto d-flex justify-content-center align-items-center">
-            <div class="card shadow p-4 border-top border-teal border-4" style="width: 100%; max-width: 400px;">
-                <div class="text-center mb-4">
-                    <img src="imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="60" class="mb-3">
-                    <h4 class="text-secondary">Control de Acceso</h4>
-                </div>
-                
-                <form id="formLogin">
-                    <div class="mb-3">
-                        <label for="username" class="form-label text-muted fw-bold">Usuario</label>
-                        <input type="text" class="form-control" id="username" placeholder="Ingrese su username" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label text-muted fw-bold">Contraseña</label>
-                        <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña" required>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-teal fw-bold">Ingresar al Sistema</button>
-                    </div>
-                </form>
 
-                <div class="text-center mt-3">
-                    <small class="text-muted">Conexión AWS: <span class="badge bg-warning text-dark">Pendiente</span></small>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sistema de Acceso Escolar ITLA</title>
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+    <div class="container my-auto d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4 border-top border-teal border-4" style="width: 100%; max-width: 400px;">
+            <div class="text-center mb-4">
+                <img src="imagenes/imagen_2_para_mod_3.png" alt="ITLA Logo" height="60" class="mb-3">
+                <h4 class="text-secondary">Control de Acceso</h4>
+            </div>
+
+            <form id="formLogin">
+                <div class="mb-3">
+                    <label for="username" class="form-label text-muted fw-bold">Usuario</label>
+                    <input type="text" class="form-control" id="username" placeholder="Ingrese su username" required>
                 </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label text-muted fw-bold">Contraseña</label>
+                    <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña"
+                        required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-teal fw-bold">Ingresar al Sistema</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">Conexión AWS: <span
+                        class="badge bg-warning text-dark">Pendiente</span></small>
             </div>
         </div>
-        <footer class="bg-dark text-white text-center py-3 mt-auto">
-            <div class="container d-flex justify-content-center align-items-center">
-                <span class="small">© 2026 ITLA - Ingeniería en Tecnologías de la Información</span>
-            </div>
-        </footer>
+    </div>
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container d-flex justify-content-center align-items-center">
+            <span class="small">© 2026 ITLA - Ingeniería en Tecnologías de la Información</span>
+        </div>
+    </footer>
 
-        <script src="js/login.js"></script>
-    </body>
+    <script src="js/login.js"></script>
+</body>
+
 </html>
