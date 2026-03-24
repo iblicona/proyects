@@ -14,7 +14,7 @@ if(isset($_POST['enviar2'])) {
     $password = $_POST['password'];
 
 
-    $sql = "INSERT INTO Personal_Medico (nombre_medico, apellido_paterno, apellido_materno, genero, correo, telefono, cedula_profesional, institucion_egreso, especialidad, usuario, contraseña) 
+    $sql = "INSERT INTO Personal_Medico (nombre, apellido_paterno, apellido_materno, genero, correo, telefono, cedula_profesional, institucion_egreso, especialidad, usuario, contraseña) 
             VALUES ('$nombre', '$apellidoP', '$apellidoM', '$genero', '$correoI', '$telefono', '$cedula', '$institucionE', '$especialidad', '$usuario', '$password')";
 
     $sql = "INSERT INTO Usuarios (usuario, pass) VALUES ('$usuario', '$password')";
