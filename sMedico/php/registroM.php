@@ -14,16 +14,14 @@ if(isset($_POST['enviar2'])) {
     $password = $_POST['password'];
 
 
-    $sql = "INSERT INTO Medicos (nombre_medico, apellido_paterno, apellido_materno, genero, correo, telefono, cedula_profesional, institucion_egreso, especialidad, usuario, contraseña) 
+    $sql1 = "INSERT INTO Personal_Medico (nombre, apellido_paterno, apellido_materno, genero, correo, telefono, cedula_profesional, institucion_egreso, especialidad, usuario, contraseña) 
             VALUES ('$nombre', '$apellidoP', '$apellidoM', '$genero', '$correoI', '$telefono', '$cedula', '$institucionE', '$especialidad', '$usuario', '$password')";
 
-    $sql = "INSERT INTO Usuarios (usuario, pass) VALUES ('$usuario', '$password')";
+    $sql2 = "INSERT INTO Usuarios (usuario, pass) VALUES ('$usuario', '$password')";
 
-    if (mysqli_query($conn, $sql)) {
+    if (mysqli_query($conn, $sql1) && mysqli_query($conn, $sql2)) {
         echo "Registro exitoso.";
     } else {
         echo "Error: " . mysqli_error($conn);
     }
  }
-
-?>
