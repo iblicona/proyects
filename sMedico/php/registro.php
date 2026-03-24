@@ -1,5 +1,5 @@
 <?php
-include("pruebaConexion.php");
+include("/pruebaConexion.php");
 if(isset($_POST['enviar'])) {
     $nombre = $_POST['nombre'];
     $apellidoP = $_POST['apellido_paterno'];
