@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             datos.carrera              = document.getElementById('carrera').value || null;
             datos.grado                = document.getElementById('grado').value   || null;
             datos.grupo                = document.getElementById('grupo').value.trim() || null;
+            datos.cuatrimestre         = document.getElementById('cuatrimestre').value || null;
             datos.estado_institucional = document.getElementById('estado_institucional').value || 'activo';
         } else if (tipo === 'docente') {
             datos.especialidad  = document.getElementById('especialidad').value.trim();

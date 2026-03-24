@@ -28,7 +28,7 @@ require_once('../../api/dbConection.php');
 // $conn es el objeto mysqli expuesto por dbConnection.php
 
 // 4. Leer JSON del body
-$body  = json_decode(file_get_contents('php://input'), true);
+$body  = json_decode(file_get_contents('php://input'), true) ?? [];
 $user  = isset($body['username']) ? trim($body['username']) : '';
 $pass  = isset($body['password']) ? trim($body['password']) : '';
 
