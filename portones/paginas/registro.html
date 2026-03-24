@@ -1,175 +1,193 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="stylesheet" type="text/css" href="../bootstrap.min.css">
-        <link rel="stylesheet" href="../styles.css">
-        <title>Sistema de Acceso - Registro</title>
-    </head>
-    <body class="bg-light d-flex flex-column min-vh-100">
-        <div class="container my-4 d-flex justify-content-center align-items-center">
-            <div class="card shadow p-4" style="width: 100%; max-width: 800px;">
-                <h3 class="text-center mb-4">Registro de Usuario</h3>
-                
-                <form id="formularioRegistro">
-                    <h5 class="text-teal border-bottom pb-2">Datos Personales</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="nombre" class="form-label">Nombre(s)</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
-                            <input type="text" class="form-control" id="apellido_paterno" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="apellido_materno" class="form-label">Apellido Materno</label>
-                            <input type="text" class="form-control" id="apellido_materno">
-                        </div>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <title>Sistema de Acceso - Registro</title>
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+    <div class="container my-4 d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4" style="width: 100%; max-width: 800px;">
+            <h3 class="text-center mb-4">Registro de Usuario</h3>
+
+            <form id="formularioRegistro">
+                <h5 class="text-teal border-bottom pb-2">Datos Personales</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="nombre" class="form-label">Nombre(s)</label>
+                        <input type="text" class="form-control" id="nombre" required>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fecha_nacimiento">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefono">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="correo" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="correo">
-                        </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="apellido_paterno" class="form-label">Apellido Paterno</label>
+                        <input type="text" class="form-control" id="apellido_paterno" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="apellido_materno" class="form-label">Apellido Materno</label>
+                        <input type="text" class="form-control" id="apellido_materno">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="correo" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correo">
+                    </div>
+                </div>
+
+                <h5 class="text-teal border-bottom pb-2 mt-3">Datos Institucionales</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="tipo_persona" class="form-label">Tipo de Usuario</label>
+                        <select class="form-select" id="tipo_persona" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="alumno">Alumno</option>
+                            <option value="docente">Docente</option>
+                            <option value="administrativo">Administrativo</option>
+                        </select>
                     </div>
 
-                    <h5 class="text-teal border-bottom pb-2 mt-3">Datos Institucionales</h5>
+                    <div class="col-md-6 mb-3">
+                        <label for="estado_institucional" class="form-label">
+                            Estado <span class="badge bg-warning text-dark ms-1"
+                                title="Pendiente de implementar en Base de Datos">En desarrollo (BD)</span>
+                        </label>
+                        <select class="form-select" id="estado_institucional" disabled>
+                            <option value="activo" selected>Activo</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="baja">Baja Definitiva</option>
+                            <option value="egresado">Egresado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="campos_alumno" class="d-none bg-light p-3 rounded border mb-3">
+                    <h6 class="text-secondary">Información de Alumno</h6>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="tipo_persona" class="form-label">Tipo de Usuario</label>
-                            <select class="form-select" id="tipo_persona" required>
+                        <div class="col-md-4 mb-3">
+                            <label for="matricula" class="form-label">Matrícula</label>
+                            <input type="text" class="form-control" id="matricula">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="nivel_educativo" class="form-label">Nivel</label>
+                            <select class="form-select" id="nivel_educativo">
                                 <option value="">Seleccionar...</option>
-                                <option value="alumno">Alumno</option>
-                                <option value="docente">Docente</option>
-                                <option value="administrativo">Administrativo</option>
+                                <option value="1">Preparatoria</option>
+                                <option value="2">Universidad</option>
                             </select>
                         </div>
-                        
+                        <div class="col-md-4 mb-3 d-none" id="campo_carrera">
+                            <label for="carrera" class="form-label">Carrera</label>
+                            <select class="form-select" id="carrera">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Ing. Tecnologías de la Info.</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="grado" class="form-label">Grado/Semestre</label>
+                            <input type="number" class="form-control" id="grado">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="grupo" class="form-label">Grupo</label>
+                            <input type="text" class="form-control" id="grupo">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cuatrimestre" class="form-label">Cuatrimestre</label>
+                            <input type="number" class="form-control" id="cuatrimestre" placeholder="Opcional">
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-2" role="alert">
+                        <strong><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-clock-history me-2" viewBox="0 0 16 16">
+                                <path
+                                    d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.99.14q-.04.374-.115.74l-.956-.27A7 7 0 0 0 15 8c0-.364-.03-.715-.085-1.05zM14.2 12.004c-.16.32-.34.622-.54.903l-.84-.53c.174-.27.323-.556.442-.857zM12.94 14.11a7 7 0 0 0 .805-.62l.66.757q-.465.405-.98.745zM10.86 15.11a7 7 0 0 0 .97-.41l.48.88q-.58.31-1.2.536zM8 15.5a7 7 0 0 0 .5-.018l.06 1q-.28.018-.56.018zm-2.52-.3a7 7 0 0 0 .98.3l-.22.97a8 8 0 0 1-1.12-.34zm-1.37-.71a7 7 0 0 0 .44.27l-.49.87q-.51-.3-.98-.65l.62-.79a7 7 0 0 0 .41.3zM2.1 12.63a7 7 0 0 0 .65.8l-.72.69q-.41-.43-.75-.91zm-.74-1.35a7 7 0 0 0 .21.47l-.89.45q-.25-.56-.45-1.09l.95-.31q.09.25.18.48M.5 8.5q-.02-.25-.03-.5h1q.01.24.03.48zm.13-1.54q-.05.26-.08.51l-.99-.14q.04-.37.12-.74l.95.27q-.04.28-.05.57v.03zm.74-2.54q.16-.32.34-.62l.84.53q-.17.27-.44.86zm1.26-2.1a7 7 0 0 0-.8.62l-.66-.76q.46-.4.98-.74zm2.08-1.01a7 7 0 0 0-.97.41l-.48-.88q.58-.31 1.2-.54zM8 1.5a7 7 0 0 0-.5.018l-.06-1q.28-.018.56-.018zM8 4a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.708l-2.5-2.5A.5.5 0 0 1 8 8V4.5A.5.5 0 0 1 8 4" />
+                            </svg> Control de Horarios</strong>
+                        <span class="badge bg-secondary ms-2">Próximamente</span>
+                        <p class="mb-0 mt-1 small">La restricción de salida basada en el horario escolar (especialmente
+                            para Preparatoria) está pendiente de implementación en el backend.</p>
+                    </div>
+                </div>
+
+                <div id="campos_docente" class="d-none bg-light p-3 rounded border mb-3">
+                    <h6 class="text-secondary">Información de Docente</h6>
+                    <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="estado_institucional" class="form-label">
-                                Estado <span class="badge bg-warning text-dark ms-1" title="Pendiente de implementar en Base de Datos">En desarrollo (BD)</span>
-                            </label>
-                            <select class="form-select" id="estado_institucional" disabled>
-                                <option value="activo" selected>Activo</option>
-                                <option value="suspendido">Suspendido</option>
-                                <option value="baja">Baja Definitiva</option>
-                                <option value="egresado">Egresado</option>
+                            <label for="especialidad" class="form-label">Especialidad</label>
+                            <input type="text" class="form-control" id="especialidad">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="nivel_docente" class="form-label">Nivel en el que imparte</label>
+                            <select class="form-select" id="nivel_docente">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Preparatoria</option>
+                                <option value="2">Universidad</option>
                             </select>
                         </div>
                     </div>
+                </div>
 
-                    <div id="campos_alumno" class="d-none bg-light p-3 rounded border mb-3">
-                        <h6 class="text-secondary">Información de Alumno</h6>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="matricula" class="form-label">Matrícula</label>
-                                <input type="text" class="form-control" id="matricula">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="nivel_educativo" class="form-label">Nivel</label>
-                                <select class="form-select" id="nivel_educativo">
-                                    <option value="">Seleccionar...</option>
-                                    <option value="1">Preparatoria</option>
-                                    <option value="2">Universidad</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3 d-none" id="campo_carrera">
-                                <label for="carrera" class="form-label">Carrera</label>
-                                <select class="form-select" id="carrera">
-                                    <option value="">Seleccionar...</option>
-                                    <option value="1">Ing. Tecnologías de la Info.</option>
-                                    </select>
-                            </div>
+                <div id="campos_administrativo" class="d-none bg-light p-3 rounded border mb-3">
+                    <h6 class="text-secondary">Información Administrativa</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="puesto" class="form-label">Puesto</label>
+                            <input type="text" class="form-control" id="puesto">
                         </div>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="grado" class="form-label">Grado/Semestre</label>
-                                <input type="number" class="form-control" id="grado">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="grupo" class="form-label">Grupo</label>
-                                <input type="text" class="form-control" id="grupo">
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-info mt-2" role="alert">
-                            <strong><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-history me-2" viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.99.14q-.04.374-.115.74l-.956-.27A7 7 0 0 0 15 8c0-.364-.03-.715-.085-1.05zM14.2 12.004c-.16.32-.34.622-.54.903l-.84-.53c.174-.27.323-.556.442-.857zM12.94 14.11a7 7 0 0 0 .805-.62l.66.757q-.465.405-.98.745zM10.86 15.11a7 7 0 0 0 .97-.41l.48.88q-.58.31-1.2.536zM8 15.5a7 7 0 0 0 .5-.018l.06 1q-.28.018-.56.018zm-2.52-.3a7 7 0 0 0 .98.3l-.22.97a8 8 0 0 1-1.12-.34zm-1.37-.71a7 7 0 0 0 .44.27l-.49.87q-.51-.3-.98-.65l.62-.79a7 7 0 0 0 .41.3zM2.1 12.63a7 7 0 0 0 .65.8l-.72.69q-.41-.43-.75-.91zm-.74-1.35a7 7 0 0 0 .21.47l-.89.45q-.25-.56-.45-1.09l.95-.31q.09.25.18.48M.5 8.5q-.02-.25-.03-.5h1q.01.24.03.48zm.13-1.54q-.05.26-.08.51l-.99-.14q.04-.37.12-.74l.95.27q-.04.28-.05.57v.03zm.74-2.54q.16-.32.34-.62l.84.53q-.17.27-.44.86zm1.26-2.1a7 7 0 0 0-.8.62l-.66-.76q.46-.4.98-.74zm2.08-1.01a7 7 0 0 0-.97.41l-.48-.88q.58-.31 1.2-.54zM8 1.5a7 7 0 0 0-.5.018l-.06-1q.28-.018.56-.018zM8 4a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.708l-2.5-2.5A.5.5 0 0 1 8 8V4.5A.5.5 0 0 1 8 4"/></svg> Control de Horarios</strong>
-                            <span class="badge bg-secondary ms-2">Próximamente</span>
-                            <p class="mb-0 mt-1 small">La restricción de salida basada en el horario escolar (especialmente para Preparatoria) está pendiente de implementación en el backend.</p>
+                        <div class="col-md-6 mb-3">
+                            <label for="departamento" class="form-label">Departamento</label>
+                            <input type="text" class="form-control" id="departamento">
                         </div>
                     </div>
+                </div>
 
-                    <div id="campos_docente" class="d-none bg-light p-3 rounded border mb-3">
-                        <h6 class="text-secondary">Información de Docente</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="especialidad" class="form-label">Especialidad</label>
-                                <input type="text" class="form-control" id="especialidad">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="nivel_docente" class="form-label">Nivel en el que imparte</label>
-                                <select class="form-select" id="nivel_docente">
-                                    <option value="">Seleccionar...</option>
-                                    <option value="1">Preparatoria</option>
-                                    <option value="2">Universidad</option>
-                                </select>
-                            </div>
+                <div class="text-center mb-4">
+                    <div class="border rounded p-4 bg-white shadow-sm">
+                        <div class="fs-1 mb-2 text-teal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="currentColor"
+                                class="bi bi-qr-code-scan" viewBox="0 0 16 16">
+                                <path
+                                    d="M0 .5A.5.5 0 0 1 .5 0h3a.5.5 0 0 1 0 1H1v2.5a.5.5 0 0 1-1 0zm12 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V1h-2.5a.5.5 0 0 1-.5-.5M.5 12a.5.5 0 0 1 .5.5V15h2.5a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1H15v-2.5a.5.5 0 0 1 .5-.5M4 4h1v1H4z" />
+                                <path d="M7 2H2v5h5zM3 3h3v3H3zm2 8H4v1h1z" />
+                                <path d="M7 9H2v5h5zm-4 1h3v3H3zm8-6h1v1h-1z" />
+                                <path
+                                    d="M9 2h5v5H9zm1 1v3h3V3zM8 8v2h1v1H8v1h2v-2h1v2h1v-1h2v-1h-3V8zm2 2H9V9h1zm4 2h-1v1h-2v1h3zm-4 2v-1H8v1z" />
+                                <path d="M12 9h2V8h-2z" />
+                            </svg>
                         </div>
+                        <p class="mb-0 text-muted">Al guardar, se generará y asignará el código QR en la base de datos.
+                        </p>
                     </div>
+                </div>
 
-                    <div id="campos_administrativo" class="d-none bg-light p-3 rounded border mb-3">
-                        <h6 class="text-secondary">Información Administrativa</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="puesto" class="form-label">Puesto</label>
-                                <input type="text" class="form-control" id="puesto">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="departamento" class="form-label">Departamento</label>
-                                <input type="text" class="form-control" id="departamento">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center mb-4">
-                        <div class="border rounded p-4 bg-white shadow-sm">
-                            <div class="fs-1 mb-2 text-teal">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="currentColor" class="bi bi-qr-code-scan" viewBox="0 0 16 16">
-                                    <path d="M0 .5A.5.5 0 0 1 .5 0h3a.5.5 0 0 1 0 1H1v2.5a.5.5 0 0 1-1 0zm12 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V1h-2.5a.5.5 0 0 1-.5-.5M.5 12a.5.5 0 0 1 .5.5V15h2.5a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1H15v-2.5a.5.5 0 0 1 .5-.5M4 4h1v1H4z"/>
-                                    <path d="M7 2H2v5h5zM3 3h3v3H3zm2 8H4v1h1z"/>
-                                    <path d="M7 9H2v5h5zm-4 1h3v3H3zm8-6h1v1h-1z"/>
-                                    <path d="M9 2h5v5H9zm1 1v3h3V3zM8 8v2h1v1H8v1h2v-2h1v2h1v-1h2v-1h-3V8zm2 2H9V9h1zm4 2h-1v1h-2v1h3zm-4 2v-1H8v1z"/>
-                                    <path d="M12 9h2V8h-2z"/>
-                                </svg>
-                            </div>
-                            <p class="mb-0 text-muted">Al guardar, se generará y asignará el código QR en la base de datos.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex gap-2">
-                        <a href="menu.html" class="btn btn-outline-secondary flex-fill">Regresar</a>
-                        <button type="submit" class="btn btn-teal flex-fill">Guardar Registro</button>
-                    </div>
-                </form>
-            </div>
+                <div class="d-flex gap-2">
+                    <a href="menu.html" class="btn btn-outline-secondary flex-fill">Regresar</a>
+                    <button type="submit" class="btn btn-teal flex-fill">Guardar Registro</button>
+                </div>
+            </form>
         </div>
-        <footer class="bg-dark text-white text-center py-3 mt-auto">
-            <div class="container d-flex justify-content-between align-items-center">
-                <span>Sistema de Acceso</span>
-                <img src="../imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="30">
-            </div>
-        </footer>
+    </div>
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span>Sistema de Acceso</span>
+            <img src="../imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="30">
+        </div>
+    </footer>
 
-        <script src="../js/registro.js"></script>
-    </body>
+    <script src="../js/registro.js"></script>
+</body>
+
 </html>

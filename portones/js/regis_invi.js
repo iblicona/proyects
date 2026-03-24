@@ -1,46 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Autocompletar la fecha de hoy por defecto para mayor comodidad
+
+    // Autocompletar la fecha de hoy por omisión
     const inputFecha = document.getElementById('fecha_visita');
-    const hoy = new Date().toISOString().split('T')[0];
-    inputFecha.value = hoy;
+    inputFecha.value = new Date().toISOString().split('T')[0];
 
     const formulario = document.getElementById('formularioInvitado');
 
-    formulario.addEventListener('submit', (e) => {
+    formulario.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Recolección básica de datos
         const datosInvitado = {
-            nombre: document.getElementById('nombre_invitado').value,
-            apellido_paterno: document.getElementById('apellido_p_invitado').value,
-            apellido_materno: document.getElementById('apellido_m_invitado').value,
-            curp: document.getElementById('cedula').value,
-            telefono: document.getElementById('telefono_invitado').value,
-            motivo: document.getElementById('motivo').value,
-            persona_a_visitar: document.getElementById('persona_visitar').value,
-            fecha: document.getElementById('fecha_visita').value,
-            hora: document.getElementById('hora_visita').value,
-            duracion_horas: document.getElementById('duracion').value
+            nombre:            document.getElementById('nombre_invitado').value.trim(),
+            apellido_paterno:  document.getElementById('apellido_p_invitado').value.trim(),
+            apellido_materno:  document.getElementById('apellido_m_invitado').value.trim(),
+            curp:              document.getElementById('cedula').value.trim(),
+            telefono:          document.getElementById('telefono_invitado').value.trim() || null,
+            motivo:            document.getElementById('motivo').value.trim(),
+            persona_a_visitar: document.getElementById('persona_visitar').value.trim(),
+            fecha:             document.getElementById('fecha_visita').value,
+            hora:              document.getElementById('hora_visita').value,
+            duracion_horas:    parseInt(document.getElementById('duracion').value, 10) || 1
         };
 
-        /* ====================================================================
-        ¡ATENCIÓN BACKEND (AWS)!
-        ====================================================================
-        Para guardar 'datosInvitado', la BD necesita ajustes.
-        
-        Sugerencia 1 (Más limpia): Crear una tabla 'invitado' independiente.
-        Sugerencia 2 (Parche): Modificar ENUM tipo_persona en tabla 'persona'
-        agregando 'invitado', y crear una tabla 'visita' que enlace el 
-        id_persona con los campos: motivo, a_quien_visita, fecha, duracion.
-        ====================================================================
-        */
+        const btnSubmit = formulario.querySelector('[type="submit"]');
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Registrando...';
 
-        console.log("Datos del invitado listos para enviar:", datosInvitado);
-        alert("Simulación: Datos del invitado procesados.\n\nFalta conexión con la Base de Datos para generar el código QR temporal.");
-        
-        // Aquí iría el código real:
-        // const respuesta = await enviarDatos('registrar_invitado', datosInvitado);
-        // if(respuesta.ok) { mostrarQR(respuesta.qrCode); }
+        try {
+            const respuesta = await enviarDatos('invitado.php', datosInvitado);
+
+            if (respuesta && respuesta.ok) {
+                alert(`✅ Invitado registrado correctamente.\nID Visita: ${respuesta.id_visita}`);
+                formulario.reset();
+                // Restaurar fecha de hoy tras reset
+                inputFecha.value = new Date().toISOString().split('T')[0];
+            } else {
+                alert('Error: ' + (respuesta ? respuesta.mensaje : 'Sin respuesta del servidor.'));
+            }
+        } catch (err) {
+            alert('No se pudo conectar con el servidor.');
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Generar QR de Invitado';
+        }
     });
 });

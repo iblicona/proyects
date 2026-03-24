@@ -23,5 +23,12 @@ function getDB() {
         }
     }
 
-    return $pdo;
+if (!isset($conn) || !$conn) {
+    die(json_encode([
+        "error" => "No se pudo establecer conexión con la base de datos"
+    ]));
 }
+
+$conn->set_charset("utf8");
+
+?>
