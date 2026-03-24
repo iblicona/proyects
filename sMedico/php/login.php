@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];
-    $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario' AND pass = '$password'";
+    $sql = "SELECT * FROM Usuarios WHERE usuario = '$usuario' AND pass = '$password'";
     $resultado = mysqli_query($conexion, $sql);
 
     if (mysqli_num_rows($resultado) > 0) {
