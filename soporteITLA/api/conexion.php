@@ -1,14 +1,18 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $host = "production.ccjgeakiwlqp.us-east-1.rds.amazonaws.com";
 $usuario = "luisfer";
 $password = "copcal";
 $base_datos = "itla_rentas";
 
-$conn = new mysqli($host, $usuario, $password, $base_datos);
+include("/var/www/proyectos/soporteITLA/api/dbconection.php");
 
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+if (!isset($conn) || !$conn) {
+    die(json_encode([
+        "error" => "No se pudo establecer conexión con la base de datos"
+    ]));
 }
 
 $conn->set_charset("utf8");
