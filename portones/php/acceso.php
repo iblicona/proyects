@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once('../../api/dbConection.php');
 
-$body        = json_decode(file_get_contents('php://input'), true);
+$body        = json_decode(file_get_contents('php://input'), true) ?? [];
 $matricula   = isset($body['matricula'])   ? trim($body['matricula'])   : '';
 $tipo_evento = isset($body['tipo_evento']) ? trim($body['tipo_evento']) : 'entrada'; // 'entrada' | 'salida'
 

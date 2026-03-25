@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once('../../api/dbConection.php');
 
-$body = json_decode(file_get_contents('php://input'), true);
+$body = json_decode(file_get_contents('php://input'), true) ?? [];
 
 // ── Datos comunes (tabla persona) ─────────────────────────────────────────
 $nombre           = isset($body['nombre'])            ? trim($body['nombre'])            : '';

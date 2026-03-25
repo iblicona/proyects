@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once('../../api/dbConection.php');
 
-$body = json_decode(file_get_contents('php://input'), true);
+$body = json_decode(file_get_contents('php://input'), true) ?? [];
 
 // --- Datos del visitante ---
 $nombre           = isset($body['nombre'])            ? trim($body['nombre'])            : '';
