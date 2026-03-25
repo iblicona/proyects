@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 0);
+// ini_set('display_startup_errors', 0);
+// error_reporting(0);
 // ============================================================
 //  login.php — Autenticación de usuarios
 //  Ruta servidor: /var/www/proyects/api/portones/login.php
@@ -27,7 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 3. Conexión a la BD
-require_once('../../api/dbconection.php');
+try {
+    require_once('credenciales.php');
+    require_once('../../api/dbconection.php');
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
+    exit();
+}
 // $conn es el objeto mysqli expuesto por dbConnection.php
 
 // 4. Leer JSON del body

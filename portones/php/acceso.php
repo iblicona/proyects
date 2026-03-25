@@ -31,7 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-require_once('../../api/dbconection.php');
+try {
+    require_once('credenciales.php');
+    require_once('../../api/dbconection.php');
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
+    exit();
+}
 
 $body        = json_decode(file_get_contents('php://input'), true) ?? [];
 $matricula   = isset($body['matricula'])   ? trim($body['matricula'])   : '';
