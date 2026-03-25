@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // ============================================================
 //  login.php — Autenticación de usuarios
 //  Ruta servidor: /var/www/proyects/api/portones/login.php
@@ -24,13 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 3. Conexión a la BD
-require_once('../../api/dbConection.php');
+require_once('../../api/dbconection.php');
 // $conn es el objeto mysqli expuesto por dbConnection.php
 
 // 4. Leer JSON del body
-$body  = json_decode(file_get_contents('php://input'), true) ?? [];
-$user  = isset($body['username']) ? trim($body['username']) : '';
-$pass  = isset($body['password']) ? trim($body['password']) : '';
+$body = json_decode(file_get_contents('php://input'), true) ?? [];
+$user = isset($body['username']) ? trim($body['username']) : '';
+$pass = isset($body['password']) ? trim($body['password']) : '';
 
 if (empty($user) || empty($pass)) {
     http_response_code(400);
@@ -41,7 +44,7 @@ if (empty($user) || empty($pass)) {
 // 5. Consulta con prepared statement
 // NOTA: Si la contraseña está hasheada (MD5, SHA1, bcrypt) en la BD,
 //       ajusta la comparación aquí (ej. $pass = md5($pass);)
-$sql  = "SELECT id_usuario, username, password, rol FROM usuario WHERE username = ? LIMIT 1";
+$sql = "SELECT id_usuario, username, password, rol FROM usuario WHERE username = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 
 if (!$stmt) {
@@ -73,9 +76,9 @@ if ($usuario['password'] !== $pass) {
 
 // 7. Respuesta exitosa
 echo json_encode([
-    'ok'      => true,
-    'rol'     => $usuario['rol'],
-    'nombre'  => $usuario['username'],
+    'ok' => true,
+    'rol' => $usuario['rol'],
+    'nombre' => $usuario['username'],
     'mensaje' => 'Inicio de sesión exitoso.'
 ]);
 
