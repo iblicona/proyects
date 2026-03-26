@@ -1,11 +1,16 @@
 document.getElementById("loginForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const usuario = document.getElementById("usuario").value;
-    const contrasena = document.getElementById("contrasena").value;
+    const usuario = document.getElementById("usuario").value.trim();
+    const contrasena = document.getElementById("contrasena").value.trim();
+
+    if (!usuario || !contrasena) {
+        alert("Completa todos los campos");
+        return;
+    }
 
     try {
-        const res = await fetch("/api/login.php", {
+        const res = await fetch("http://localhost/proyects/biblioteca/api/login.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -18,18 +23,17 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
         const data = await res.json();
 
-        if (data.status === "ok") {
-            // Guardar sesión
-            localStorage.setItem("usuario", JSON.stringify(data.user));
+        console.log("Respuesta servidor:", data); // 🔍 DEBUG
 
-            // Redirigir
+        if (data.status === "ok") {
+            localStorage.setItem("usuario", JSON.stringify(data.user));
             window.location.href = "admin.html";
         } else {
-            alert("Usuario o contraseña incorrectos");
+            alert(data.msg || "Usuario o contraseña incorrectos");
         }
 
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
         alert("Error de conexión con el servidor");
     }
 });
