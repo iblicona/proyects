@@ -7,8 +7,13 @@ let usuariosGlobal = [];
 // 🔹 OBTENER USUARIOS DESDE API
 async function obtenerUsuarios() {
   try {
-    const res = await fetch("/api/usuarios");
+    const res = await fetch("./api/usuarios.php"); // ✅ FIX
+
+    if (!res.ok) throw new Error("Error al obtener datos");
+
     const data = await res.json();
+
+    console.log("Usuarios:", data); // 🔍 DEBUG
 
     // Convertir fecha SQL → dd/mm/yyyy
     usuariosGlobal = data.map(u => {
@@ -28,6 +33,7 @@ async function obtenerUsuarios() {
   }
 }
 
+// 🔹 TEXTO DEL MES
 function obtenerMesTexto(fecha) {
   const meses = [
     "Enero","Febrero","Marzo","Abril","Mayo","Junio",
@@ -36,6 +42,7 @@ function obtenerMesTexto(fecha) {
   return meses[fecha.getMonth()] + " " + fecha.getFullYear();
 }
 
+// 🔹 ACTUALIZAR MES EN UI
 function actualizarEtiquetaMes() {
   const etiqueta = document.getElementById("mesActual");
   if (etiqueta) {
@@ -43,6 +50,7 @@ function actualizarEtiquetaMes() {
   }
 }
 
+// 🔹 CONTADOR
 function actualizarContador(cantidad) {
   let contador = document.getElementById("contadorMes");
   if (!contador) return;
@@ -83,13 +91,17 @@ function pintarTabla(lista) {
   lista.forEach(user => {
     tabla.innerHTML += `
       <tr>
-        <td>${user.foto ? `<img src="/api/uploads/${user.foto}" width="40">` : "—"}</td>
+        <td>
+          ${user.foto 
+            ? `<img src="./api/uploads/${user.foto}" width="40">` 
+            : "—"}
+        </td>
         <td>${user.nombre}</td>
         <td>${user.matricula}</td>
         <td>${user.tipo}</td>
-        <td>${user.area}</td>
+        <td>${user.area || "—"}</td>
         <td>${user.correo}</td>
-        <td>${user.telefono}</td>
+        <td>${user.telefono || "—"}</td>
         <td>${user.fecha}</td>
         <td>
           <button onclick="eliminarUsuario(${user.id})">🗑</button>
@@ -99,15 +111,26 @@ function pintarTabla(lista) {
   });
 }
 
-// 🔹 ELIMINAR DESDE API
+// 🔹 ELIMINAR USUARIO
 async function eliminarUsuario(id) {
   if (!confirm("¿Eliminar usuario?")) return;
 
-  await fetch(`/api/usuarios?id=${id}`, {
-    method: "DELETE"
-  });
+  try {
+    const res = await fetch(`./api/usuarios.php?id=${id}`, {
+      method: "DELETE"
+    });
 
-  await init();
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      await init();
+    } else {
+      alert("Error al eliminar");
+    }
+
+  } catch (error) {
+    console.error("Error eliminando:", error);
+  }
 }
 
 // 🔹 BUSCADOR
@@ -117,7 +140,7 @@ if (buscador) {
   });
 }
 
-// 🔹 EXPORTAR
+// 🔹 EXPORTAR A EXCEL
 function exportarExcel() {
   const filas = tabla.innerHTML;
 
