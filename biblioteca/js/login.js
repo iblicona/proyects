@@ -10,7 +10,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     }
 
     try {
-        const res = await fetch("http://localhost/proyects/biblioteca/api/login.php", {
+        const res = await fetch("./api/login.php", { // ✅ FIX
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -23,7 +23,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
         const data = await res.json();
 
-        console.log("Respuesta servidor:", data); // 🔍 DEBUG
+        console.log("Respuesta servidor:", data);
 
         if (data.status === "ok") {
             localStorage.setItem("usuario", JSON.stringify(data.user));
