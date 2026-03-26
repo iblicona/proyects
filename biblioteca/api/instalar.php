@@ -1,28 +1,32 @@
 <?php
+/* ================================
+   INSTALADOR DE BASE DE DATOS
+   Ejecuta este archivo UNA SOLA VEZ
+================================ */
+
 include("conexion.php");
 
 // Conexión sin DB
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
+$conn = new mysqli($host, $usuario, $password);
 
 if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+    die("<h2 style='color:red'>Error de conexión: " . $conn->connect_error . "</h2>");
 }
 
-// Crear base de datos
-$sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME . " 
-        CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+$sqls = [];
 
-if (!$conn->query($sql)) {
-    die("Error creando BD: " . $conn->error);
-}
+/* ================================
+   CREAR BASE DE DATOS
+================================ */
+$sqls[] = "CREATE DATABASE IF NOT EXISTS $base_datos 
+           CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
-$conn->select_db(DB_NAME);
+$sqls[] = "USE $base_datos";
 
-
-// =========================
-// TABLA USUARIOS (AJUSTADA)
-// =========================
-$sql = "CREATE TABLE IF NOT EXISTS usuarios (
+/* ================================
+   TABLA USUARIOS
+================================ */
+$sqls[] = "CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     foto VARCHAR(255),
     nombre VARCHAR(150) NOT NULL,
@@ -35,15 +39,10 @@ $sql = "CREATE TABLE IF NOT EXISTS usuarios (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
-if (!$conn->query($sql)) {
-    die("Error creando tabla usuarios: " . $conn->error);
-}
-
-
-// =========================
-// TABLA LIBROS (para menú)
-// =========================
-$sql = "CREATE TABLE IF NOT EXISTS libros (
+/* ================================
+   TABLA LIBROS
+================================ */
+$sqls[] = "CREATE TABLE IF NOT EXISTS libros (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255),
     autor VARCHAR(255),
@@ -52,28 +51,46 @@ $sql = "CREATE TABLE IF NOT EXISTS libros (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
-$conn->query($sql);
-
-
-// =========================
-// ADMIN INICIAL
-// =========================
+/* ================================
+   ADMIN INICIAL
+================================ */
 $adminPass = password_hash("admin123", PASSWORD_BCRYPT);
 
-$sql = "INSERT IGNORE INTO usuarios 
+$sqls[] = "INSERT IGNORE INTO usuarios 
 (matricula, nombre, tipo, area, correo, telefono, password)
 VALUES 
 ('ADMIN001', 'Administrador', 'admin', 'Sistema', 'admin@itla.com', '0000000000', '$adminPass')";
 
-$conn->query($sql);
+/* ================================
+   EJECUCIÓN DE QUERYS
+================================ */
+echo "<h2 style='font-family:Arial'>Instalando sistema...</h2>";
+echo "<ul style='font-family:Arial'>";
 
+foreach ($sqls as $sql) {
+    if ($conn->query($sql) === TRUE) {
+        $preview = substr($sql, 0, 60) . "...";
+        echo "<li style='color:green'>✅ OK: <code>$preview</code></li>";
+    } else {
+        echo "<li style='color:red'>❌ Error en: <code>" . substr($sql,0,60) . "</code><br>" . $conn->error . "</li>";
+    }
+}
 
-// =========================
-// MENSAJE FINAL
-// =========================
-echo "<h2>✅ Instalación completa</h2>";
-echo "Usuario admin:<br>";
-echo "Correo: admin@itla.com<br>";
-echo "Password: admin123<br>";
+echo "</ul>";
 
+/* ================================
+   MENSAJE FINAL
+================================ */
+echo "<h3 style='font-family:Arial;color:#0a2a5e'>✅ Instalación completa</h3>";
+echo "<p style='font-family:Arial'>
+<b>Usuario admin:</b><br>
+Correo: admin@itla.com<br>
+Password: admin123
+</p>";
+
+echo "<p style='font-family:Arial;color:red'>
+<b>⚠️ Elimina o protege este archivo después de usarlo.</b>
+</p>";
+
+$conn->close();
 ?>
