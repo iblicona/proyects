@@ -31,12 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-try {
-    include("/var/www/proyects/api/dbconection.php");
-}
-catch (Throwable $e) {
+include('credenciales.php');
+
+if (!$conn) {
     http_response_code(500);
-    echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
+    echo json_encode(['ok' => false, 'mensaje' => 'Sin conexión a la base de datos.']);
     exit();
 }
 
