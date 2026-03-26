@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // 3. Conexión a la BD
 try {
-    require_once('credenciales.php');
-    require_once('../../api/dbconection.php');
-} catch (Throwable $e) {
+    include("/var/www/proyects/api/dbconection.php");
+}
+catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
     exit();

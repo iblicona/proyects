@@ -32,16 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    require_once('credenciales.php');
-    require_once('../../api/dbconection.php');
-} catch (Throwable $e) {
+    include("/var/www/proyects/api/dbconection.php");
+}
+catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
     exit();
 }
 
-$body        = json_decode(file_get_contents('php://input'), true) ?? [];
-$matricula   = isset($body['matricula'])   ? trim($body['matricula'])   : '';
+$body = json_decode(file_get_contents('php://input'), true) ?? [];
+$matricula = isset($body['matricula']) ? trim($body['matricula']) : '';
 $tipo_evento = isset($body['tipo_evento']) ? trim($body['tipo_evento']) : 'entrada'; // 'entrada' | 'salida'
 
 if (empty($matricula)) {
@@ -83,35 +83,35 @@ $stmt->close();
 if ($result->num_rows === 0) {
     http_response_code(404);
     echo json_encode([
-        'ok'        => false,
+        'ok' => false,
         'permitido' => false,
-        'mensaje'   => "Matrícula '{$matricula}' no encontrada en el sistema."
+        'mensaje' => "Matrícula '{$matricula}' no encontrada en el sistema."
     ]);
     exit();
 }
 
-$alumno          = $result->fetch_assoc();
-$id_persona      = $alumno['id_persona'];
+$alumno = $result->fetch_assoc();
+$id_persona = $alumno['id_persona'];
 $nombre_completo = $alumno['nombre'] . ' ' . $alumno['apellido_paterno'] . ' ' . $alumno['apellido_materno'];
 
 // ── PASO 2: Verificar estado institucional ─────────────────────────────────
 if ($alumno['estado_institucional'] !== 'activo') {
     $estado = $alumno['estado_institucional'];
-    $msgs   = [
+    $msgs = [
         'suspendido' => 'Acceso bloqueado: alumno suspendido.',
-        'baja'       => 'Acceso bloqueado: alumno con baja definitiva.',
-        'egresado'   => 'Acceso bloqueado: credencial de egresado vencida.',
+        'baja' => 'Acceso bloqueado: alumno con baja definitiva.',
+        'egresado' => 'Acceso bloqueado: credencial de egresado vencida.',
     ];
     $mensaje = $msgs[$estado] ?? "Acceso bloqueado: estado '{$estado}'.";
 
     // No registramos en asistencia intentos de suspendidos / baja / egresados
     echo json_encode([
-        'ok'                   => true,
-        'permitido'            => false,
+        'ok' => true,
+        'permitido' => false,
         'estado_institucional' => $estado,
-        'nombre'               => $nombre_completo,
-        'matricula'            => $matricula,
-        'mensaje'              => $mensaje
+        'nombre' => $nombre_completo,
+        'matricula' => $matricula,
+        'mensaje' => $mensaje
     ]);
     $conn->close();
     exit();
@@ -121,7 +121,7 @@ if ($alumno['estado_institucional'] !== 'activo') {
 $razon_denegacion = null;
 
 if ((int)$alumno['id_nivel'] === 1 && $tipo_evento === 'salida') {
-    $grupo       = $alumno['grupo'];
+    $grupo = $alumno['grupo'];
     $hora_actual = date('H:i:s');
 
     $sql_h = "SELECT hora_salida_permitida FROM horario_grupo WHERE grupo = ? LIMIT 1";
@@ -139,7 +139,7 @@ if ((int)$alumno['id_nivel'] === 1 && $tipo_evento === 'salida') {
                 $razon_denegacion = "Salida denegada por horario. Permitida desde: {$hora_permitida}. Hora actual: {$hora_actual}.";
             }
         }
-        // Si grupo no está en horario_grupo se permite la salida
+    // Si grupo no está en horario_grupo se permite la salida
     }
 }
 
@@ -148,14 +148,14 @@ if ($razon_denegacion !== null) {
     registrarAsistencia($conn, $id_persona, $tipo_evento);
 
     echo json_encode([
-        'ok'                   => true,
-        'permitido'            => false,
+        'ok' => true,
+        'permitido' => false,
         'estado_institucional' => $alumno['estado_institucional'],
-        'nombre'               => $nombre_completo,
-        'matricula'            => $matricula,
-        'id_nivel'             => $alumno['id_nivel'],
-        'grupo'                => $alumno['grupo'],
-        'mensaje'              => $razon_denegacion
+        'nombre' => $nombre_completo,
+        'matricula' => $matricula,
+        'id_nivel' => $alumno['id_nivel'],
+        'grupo' => $alumno['grupo'],
+        'mensaje' => $razon_denegacion
     ]);
     $conn->close();
     exit();
@@ -165,14 +165,14 @@ if ($razon_denegacion !== null) {
 registrarAsistencia($conn, $id_persona, $tipo_evento);
 
 echo json_encode([
-    'ok'                   => true,
-    'permitido'            => true,
+    'ok' => true,
+    'permitido' => true,
     'estado_institucional' => $alumno['estado_institucional'],
-    'nombre'               => $nombre_completo,
-    'matricula'            => $matricula,
-    'id_nivel'             => $alumno['id_nivel'],
-    'grupo'                => $alumno['grupo'],
-    'mensaje'              => ucfirst($tipo_evento) . ' registrada correctamente.'
+    'nombre' => $nombre_completo,
+    'matricula' => $matricula,
+    'id_nivel' => $alumno['id_nivel'],
+    'grupo' => $alumno['grupo'],
+    'mensaje' => ucfirst($tipo_evento) . ' registrada correctamente.'
 ]);
 
 $conn->close();
@@ -193,20 +193,23 @@ $conn->close();
  * @param int    $id_persona
  * @param string $tipo_evento  'entrada' | 'salida'
  */
-function registrarAsistencia($conn, $id_persona, $tipo_evento) {
-    $fecha     = date('Y-m-d');
-    $hora_now  = date('H:i:s');
+function registrarAsistencia($conn, $id_persona, $tipo_evento)
+{
+    $fecha = date('Y-m-d');
+    $hora_now = date('H:i:s');
 
     if ($tipo_evento === 'entrada') {
-        $sql  = "INSERT INTO asistencia (id_persona, fecha, hora_entrada, tipo_registro)
+        $sql = "INSERT INTO asistencia (id_persona, fecha, hora_entrada, tipo_registro)
                  VALUES (?, ?, ?, 'entrada')";
         $stmt = $conn->prepare($sql);
-        if (!$stmt) return;
+        if (!$stmt)
+            return;
         $stmt->bind_param('iss', $id_persona, $fecha, $hora_now);
         $stmt->execute();
         $stmt->close();
 
-    } elseif ($tipo_evento === 'salida') {
+    }
+    elseif ($tipo_evento === 'salida') {
         // Intentar actualizar la última entrada sin salida del mismo día
         $sql_upd = "UPDATE asistencia
                     SET hora_salida = ?, tipo_registro = 'salida'
@@ -216,7 +219,8 @@ function registrarAsistencia($conn, $id_persona, $tipo_evento) {
                     ORDER BY hora_entrada DESC
                     LIMIT 1";
         $stmt = $conn->prepare($sql_upd);
-        if (!$stmt) return;
+        if (!$stmt)
+            return;
         $stmt->bind_param('sis', $hora_now, $id_persona, $fecha);
         $stmt->execute();
         $filas_afectadas = $stmt->affected_rows;
@@ -227,7 +231,8 @@ function registrarAsistencia($conn, $id_persona, $tipo_evento) {
             $sql_ins = "INSERT INTO asistencia (id_persona, fecha, hora_salida, tipo_registro)
                         VALUES (?, ?, ?, 'salida')";
             $stmt2 = $conn->prepare($sql_ins);
-            if (!$stmt2) return;
+            if (!$stmt2)
+                return;
             $stmt2->bind_param('iss', $id_persona, $fecha, $hora_now);
             $stmt2->execute();
             $stmt2->close();
