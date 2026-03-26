@@ -13,7 +13,7 @@ if (!$data) {
     $data = $_POST;
 }
 
-// Validar datos
+// 🔍 Validar datos
 if (!isset($data['usuario']) || !isset($data['password'])) {
     echo json_encode([
         "status" => "error",
@@ -33,6 +33,7 @@ $sql = "SELECT * FROM usuarios
 
 $result = $conn->query($sql);
 
+// ❌ Error en query
 if (!$result) {
     echo json_encode([
         "status" => "error",
@@ -42,11 +43,12 @@ if (!$result) {
     exit;
 }
 
+// 🔍 Verificar usuario
 if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
 
-    // 🔐 Verificar contraseña
-    if (password_verify($password, $user['password'])) {
+    // 🔥 COMPARACIÓN DIRECTA (SIN HASH)
+    if ($password === $user['password']) {
         echo json_encode([
             "status" => "ok",
             "user" => [
