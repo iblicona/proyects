@@ -64,7 +64,7 @@ form.addEventListener("submit", async function (e) {
   }
 
   try {
-    const res = await fetch("./api/crear_usuario.php", {
+    const res = await fetch("./api/login.php", {
       method: "POST",
       body: formData
     });
