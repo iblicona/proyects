@@ -21,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    require_once('credenciales.php');
-    require_once('../../api/dbconection.php');
-} catch (Throwable $e) {
+    include("/var/www/proyects/api/dbconection.php");
+}
+catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
     exit();
@@ -32,18 +32,18 @@ try {
 $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
 // --- Datos del visitante ---
-$nombre           = isset($body['nombre'])            ? trim($body['nombre'])            : '';
-$apellido_paterno = isset($body['apellido_paterno'])  ? trim($body['apellido_paterno'])  : '';
-$apellido_materno = isset($body['apellido_materno'])  ? trim($body['apellido_materno'])  : '';
-$telefono         = isset($body['telefono'])          ? trim($body['telefono'])          : null;
+$nombre = isset($body['nombre']) ? trim($body['nombre']) : '';
+$apellido_paterno = isset($body['apellido_paterno']) ? trim($body['apellido_paterno']) : '';
+$apellido_materno = isset($body['apellido_materno']) ? trim($body['apellido_materno']) : '';
+$telefono = isset($body['telefono']) ? trim($body['telefono']) : null;
 
 // --- Datos de la visita ---
-$curp             = isset($body['curp'])              ? trim($body['curp'])              : '';
-$motivo           = isset($body['motivo'])            ? trim($body['motivo'])            : '';
-$persona_a_visitar= isset($body['persona_a_visitar']) ? trim($body['persona_a_visitar']) : '';
-$fecha_visita     = isset($body['fecha'])             ? trim($body['fecha'])             : date('Y-m-d');
-$hora_llegada     = isset($body['hora'])              ? trim($body['hora'])              : date('H:i:s');
-$duracion_horas   = isset($body['duracion_horas'])    ? intval($body['duracion_horas'])  : 1;
+$curp = isset($body['curp']) ? trim($body['curp']) : '';
+$motivo = isset($body['motivo']) ? trim($body['motivo']) : '';
+$persona_a_visitar = isset($body['persona_a_visitar']) ? trim($body['persona_a_visitar']) : '';
+$fecha_visita = isset($body['fecha']) ? trim($body['fecha']) : date('Y-m-d');
+$hora_llegada = isset($body['hora']) ? trim($body['hora']) : date('H:i:s');
+$duracion_horas = isset($body['duracion_horas']) ? intval($body['duracion_horas']) : 1;
 
 if (empty($nombre) || empty($apellido_paterno) || empty($curp) || empty($motivo) || empty($persona_a_visitar)) {
     http_response_code(400);
@@ -62,7 +62,8 @@ try {
                       (nombre, apellido_paterno, apellido_materno, telefono, tipo_persona)
                     VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql_persona);
-    if (!$stmt) throw new Exception("Error preparando persona: " . $conn->error);
+    if (!$stmt)
+        throw new Exception("Error preparando persona: " . $conn->error);
 
     $stmt->bind_param('sssss',
         $nombre, $apellido_paterno, $apellido_materno, $telefono, $tipo_persona
@@ -76,7 +77,8 @@ try {
                      (id_persona, curp, motivo, persona_a_visitar, fecha_visita, hora_llegada, duracion_horas)
                    VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql_visita);
-    if (!$stmt) throw new Exception("Error preparando visita: " . $conn->error);
+    if (!$stmt)
+        throw new Exception("Error preparando visita: " . $conn->error);
 
     $stmt->bind_param('isssssi',
         $id_persona, $curp, $motivo, $persona_a_visitar,
@@ -89,13 +91,14 @@ try {
     $conn->commit();
 
     echo json_encode([
-        'ok'         => true,
+        'ok' => true,
         'id_persona' => $id_persona,
-        'id_visita'  => $id_visita,
-        'mensaje'    => 'Invitado registrado correctamente.'
+        'id_visita' => $id_visita,
+        'mensaje' => 'Invitado registrado correctamente.'
     ]);
 
-} catch (Exception $e) {
+}
+catch (Exception $e) {
     $conn->rollback();
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error al registrar invitado: ' . $e->getMessage()]);

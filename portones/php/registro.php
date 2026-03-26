@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    require_once('credenciales.php');
-    require_once('../../api/dbconection.php');
-} catch (Throwable $e) {
+    include("/var/www/proyects/api/dbconection.php");
+}
+catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error de conexión a la base de datos.']);
     exit();
@@ -40,13 +40,13 @@ try {
 $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
 // ── Datos comunes (tabla persona) ─────────────────────────────────────────
-$nombre           = isset($body['nombre'])            ? trim($body['nombre'])            : '';
-$apellido_paterno = isset($body['apellido_paterno'])  ? trim($body['apellido_paterno'])  : '';
-$apellido_materno = isset($body['apellido_materno'])  ? trim($body['apellido_materno'])  : '';
-$fecha_nacimiento = !empty($body['fecha_nacimiento'])  ? trim($body['fecha_nacimiento'])  : null;
-$telefono         = !empty($body['telefono'])          ? trim($body['telefono'])          : null;
-$correo           = !empty($body['correo'])            ? trim($body['correo'])            : null;
-$tipo_persona     = isset($body['tipo_persona'])       ? trim($body['tipo_persona'])      : '';
+$nombre = isset($body['nombre']) ? trim($body['nombre']) : '';
+$apellido_paterno = isset($body['apellido_paterno']) ? trim($body['apellido_paterno']) : '';
+$apellido_materno = isset($body['apellido_materno']) ? trim($body['apellido_materno']) : '';
+$fecha_nacimiento = !empty($body['fecha_nacimiento']) ? trim($body['fecha_nacimiento']) : null;
+$telefono = !empty($body['telefono']) ? trim($body['telefono']) : null;
+$correo = !empty($body['correo']) ? trim($body['correo']) : null;
+$tipo_persona = isset($body['tipo_persona']) ? trim($body['tipo_persona']) : '';
 
 if (empty($nombre) || empty($apellido_paterno) || empty($tipo_persona)) {
     http_response_code(400);
@@ -71,7 +71,8 @@ try {
                  fecha_nacimiento, telefono, correo, tipo_persona)
               VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql_p);
-    if (!$stmt) throw new Exception("Error preparando persona: " . $conn->error);
+    if (!$stmt)
+        throw new Exception("Error preparando persona: " . $conn->error);
 
     $stmt->bind_param('sssssss',
         $nombre, $apellido_paterno, $apellido_materno,
@@ -84,22 +85,24 @@ try {
     // 2. Insertar en tabla específica
     if ($tipo_persona === 'alumno') {
         // Campos de alumno — todos los del esquema real, incluyendo cuatrimestre
-        $matricula            = !empty($body['matricula'])            ? trim($body['matricula'])             : null;
-        $grado                = !empty($body['grado'])                ? intval($body['grado'])               : null;
-        $grupo                = !empty($body['grupo'])                ? trim($body['grupo'])                 : null;
-        $cuatrimestre         = !empty($body['cuatrimestre'])         ? intval($body['cuatrimestre'])        : null;
-        $id_nivel             = !empty($body['nivel_educativo'])      ? intval($body['nivel_educativo'])     : null;
-        $id_carrera           = !empty($body['carrera'])              ? intval($body['carrera'])             : null;
-        $estado_institucional = !empty($body['estado_institucional']) ? trim($body['estado_institucional'])  : 'activo';
+        $matricula = !empty($body['matricula']) ? trim($body['matricula']) : null;
+        $grado = !empty($body['grado']) ? intval($body['grado']) : null;
+        $grupo = !empty($body['grupo']) ? trim($body['grupo']) : null;
+        $cuatrimestre = !empty($body['cuatrimestre']) ? intval($body['cuatrimestre']) : null;
+        $id_nivel = !empty($body['nivel_educativo']) ? intval($body['nivel_educativo']) : null;
+        $id_carrera = !empty($body['carrera']) ? intval($body['carrera']) : null;
+        $estado_institucional = !empty($body['estado_institucional']) ? trim($body['estado_institucional']) : 'activo';
 
-        if (!$id_nivel) throw new Exception("El nivel educativo es requerido para alumno.");
+        if (!$id_nivel)
+            throw new Exception("El nivel educativo es requerido para alumno.");
 
         $sql_a = "INSERT INTO alumno
                     (id_persona, matricula, grado, grupo, cuatrimestre,
                      id_nivel, id_carrera, estado_institucional)
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql_a);
-        if (!$stmt) throw new Exception("Error preparando alumno: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Error preparando alumno: " . $conn->error);
 
         $stmt->bind_param('isisiiis',
             $id_persona, $matricula, $grado, $grupo, $cuatrimestre,
@@ -108,29 +111,34 @@ try {
         $stmt->execute();
         $stmt->close();
 
-    } elseif ($tipo_persona === 'docente') {
-        $especialidad = !empty($body['especialidad'])   ? trim($body['especialidad'])      : null;
-        $id_nivel     = !empty($body['nivel_docente'])  ? intval($body['nivel_docente'])   : null;
+    }
+    elseif ($tipo_persona === 'docente') {
+        $especialidad = !empty($body['especialidad']) ? trim($body['especialidad']) : null;
+        $id_nivel = !empty($body['nivel_docente']) ? intval($body['nivel_docente']) : null;
 
-        if (!$id_nivel) throw new Exception("El nivel educativo es requerido para docente.");
+        if (!$id_nivel)
+            throw new Exception("El nivel educativo es requerido para docente.");
 
         $sql_d = "INSERT INTO docente (id_persona, especialidad, id_nivel)
                   VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql_d);
-        if (!$stmt) throw new Exception("Error preparando docente: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Error preparando docente: " . $conn->error);
 
         $stmt->bind_param('isi', $id_persona, $especialidad, $id_nivel);
         $stmt->execute();
         $stmt->close();
 
-    } elseif ($tipo_persona === 'administrativo') {
-        $puesto       = !empty($body['puesto'])       ? trim($body['puesto'])       : null;
+    }
+    elseif ($tipo_persona === 'administrativo') {
+        $puesto = !empty($body['puesto']) ? trim($body['puesto']) : null;
         $departamento = !empty($body['departamento']) ? trim($body['departamento']) : null;
 
         $sql_adm = "INSERT INTO administrativo (id_persona, puesto, departamento)
                     VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql_adm);
-        if (!$stmt) throw new Exception("Error preparando administrativo: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Error preparando administrativo: " . $conn->error);
 
         $stmt->bind_param('iss', $id_persona, $puesto, $departamento);
         $stmt->execute();
@@ -140,12 +148,13 @@ try {
     $conn->commit();
 
     echo json_encode([
-        'ok'         => true,
+        'ok' => true,
         'id_persona' => $id_persona,
-        'mensaje'    => 'Registro guardado correctamente.'
+        'mensaje' => 'Registro guardado correctamente.'
     ]);
 
-} catch (Exception $e) {
+}
+catch (Exception $e) {
     $conn->rollback();
     http_response_code(500);
     echo json_encode(['ok' => false, 'mensaje' => 'Error al guardar: ' . $e->getMessage()]);
