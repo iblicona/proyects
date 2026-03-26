@@ -12,7 +12,7 @@ include("/var/www/proyects/api/dbconection.php");
 // 🔌 CONEXIÓN
 if (!isset($conn)) {
 
-    $conn = new mysqli($host, $usuario, $password, $base_datos);
+    $conn = new mysqli($host, $usuario, $password);
 
     if ($conn->connect_error) {
         die("Error de conexión: " . $conn->connect_error);
