@@ -1,8 +1,10 @@
 <?php
 header("Content-Type: application/json");
 
-$contenido = file_get_contents('../../api/dbconection.php');
-
 echo json_encode([
-    'primeras_lineas' => substr($contenido, 0, 500)
+    'pem_en_api' => file_exists('../../api/global-bundle.pem'),
+    'ruta_pem' => realpath('../../api/global-bundle.pem'),
+    'dir_actual' => __DIR__,
+    'test_conn' => '',
+    'error_conn' => '',
 ]);
