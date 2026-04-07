@@ -46,7 +46,7 @@ if($conn) {
         <label for="presentation">Presentación (mg):</label>
         <input type="number" id="presentation" name="presentation" min="1" required>
         
-        <input  id="enviar3" type="submit" value="Agregar">
+        <input type="submit" name="enviar3" id="enviar3" value="Agregar">
     </form>
     <a href="img/inv_med.pdf" target="_blank"><img src="img/impresion.png" alt="impresion"></a>
   </div>
