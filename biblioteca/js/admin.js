@@ -104,6 +104,7 @@ function pintarTabla(lista) {
         <td>${user.telefono || "—"}</td>
         <td>${user.fecha}</td>
         <td>
+          <button onclick="prepararEdicion(${JSON.stringify(user).replace(/"/g, '&quot;')})">✏️</button>
           <button onclick="eliminarUsuario(${user.id})">🗑</button>
         </td>
       </tr>
@@ -180,4 +181,33 @@ async function init() {
   cargarUsuariosPorMes();
 }
 
+async function prepararEdicion(user) {
+    const nuevoNombre = prompt("Editar Nombre:", user.nombre);
+    if (nuevoNombre === null) return; // Cancelado
+
+    const nuevosDatos = {
+        id: user.id,
+        nombre: nuevoNombre,
+        tipo: user.tipo,
+        area: user.area,
+        correo: user.correo,
+        telefono: user.telefono
+    };
+
+    try {
+        const res = await fetch("./api/usuarios.php", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nuevosDatos)
+        });
+        
+        const data = await res.json();
+        if(data.status === "ok") {
+            alert("Actualizado con éxito");
+            init(); // Recargar tabla
+        }
+    } catch (error) {
+        console.error("Error al editar:", error);
+    }
+}
 document.addEventListener("DOMContentLoaded", init);
