@@ -1,3 +1,10 @@
+<?php
+include("pruebaConexion.php");
+if($conexion) {
+    $consulta = "SELECT * FROM datos";
+    $resultado = mysqli_query($conexion, $consulta);   
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -52,20 +59,36 @@
     </div>
     
     <h2>Inventario</h2>
-    <table id="inventory-table">
+    <table  class="table table-bordered" id="inventory-table">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Nombre Genérico</th>
           <th>Tipo de Dosis</th>
           <th>Cantidad</th>
           <th>Presentación (mg)</th>
-          <th>Acción</th>
         </tr>
       </thead>
       <tbody id="inventory-tbody"></tbody>
-    </table>
+        <?php
+                if ($resultado) {
+                    while ($fila = mysqli_fetch_assoc($resultado)) {
+                        echo "<tr>";
+                        echo "<td>" . $fila['id_medicamento'] . "</td>";
+                        echo "<td>" . $fila['Medicamento'] . "</td>";
+                        echo "<td>" . $fila['nombre_generico'] . "</td>";
+                        echo "<td>" . $fila['dosis'] . "</td>";
+                        echo "<td>" . $fila['Cantidad'] . "</td>";
+                        echo "<td>" . $fila['Presentacion'] . "</td>";
+                        echo "<td><a href='EditarRegistro.php?id=" . $fila['id_medicamento'] . "' class='btn btn-sm btn-primary'>Editar</a></td>";
+                        echo "<td><a href='eliminar.php?id=" . $fila['id_medicamento'] . "' class='delete-button'>Eliminar</a></td>";
+                        echo "</tr>";   
+                    }
+                } else {
+                    echo "<tr><td colspan='18'>No se encontraron registros.</td></tr>";
+                }
+                ?>
   </div>
-<!--Aquí debe ir un script-->
 </body>
 </html>
