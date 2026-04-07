@@ -67,27 +67,35 @@ if($conn) {
           <th>Tipo de Dosis</th>
           <th>Cantidad</th>
           <th>Presentación (mg)</th>
+          <th>Editar</th>
+          <th>Eliminar</th>
         </tr>
       </thead>
-      <tbody id="inventory-tbody"></tbody>
+      <tbody id="inventory-tbody">
         <?php
-                if ($resultado) {
-                    while ($fila = mysqli_fetch_assoc($resultado)) {
-                        echo "<tr>";
-                        echo "<td>" . $fila['id_medicamento'] . "</td>";
-                        echo "<td>" . $fila['Medicamento'] . "</td>";
-                        echo "<td>" . $fila['nombre_generico'] . "</td>";
-                        echo "<td>" . $fila['dosis'] . "</td>";
-                        echo "<td>" . $fila['Cantidad'] . "</td>";
-                        echo "<td>" . $fila['Presentacion'] . "</td>";
-                        echo "<td><a href='EditarRegistro.php?id=" . $fila['id_medicamento'] . "' class='btn btn-sm btn-primary'>Editar</a></td>";
-                        echo "<td><a href='eliminar.php?id=" . $fila['id_medicamento'] . "' class='delete-button'>Eliminar</a></td>";
-                        echo "</tr>";   
-                    }
-                } else {
-                    echo "<tr><td colspan='18'>No se encontraron registros.</td></tr>";
+        if ($resultado) {
+            $num_rows = mysqli_num_rows($resultado);
+            if ($num_rows > 0) {
+                while ($fila = mysqli_fetch_assoc($resultado)) {
+                    echo "<tr>";
+                    echo "<td>" . $fila['id_medicamento'] . "</td>";
+                    echo "<td>" . $fila['Medicamento'] . "</td>";
+                    echo "<td>" . $fila['nombre_generico'] . "</td>";
+                    echo "<td>" . $fila['dosis'] . "</td>";
+                    echo "<td>" . $fila['Cantidad'] . "</td>";
+                    echo "<td>" . $fila['Presentacion'] . "</td>";
+                    echo "<td><a href='EditarRegistro.php?id=" . $fila['id_medicamento'] . "' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='eliminar.php?id=" . $fila['id_medicamento'] . "' class='delete-button'>Eliminar</a></td>";
+                    echo "</tr>";   
                 }
-                ?>
-  </div>
+            } else {
+                echo "<tr><td colspan='8'>No se encontraron registros.</td></tr>";
+            }
+        } else {
+            echo "<tr><td colspan='8'>Error en la consulta.</td></tr>";
+        }
+        ?>
+      </tbody>
+    </table>
 </body>
 </html>
