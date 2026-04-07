@@ -5,7 +5,7 @@ $action = $_GET["action"] ?? "";
 
 /* ─── USUARIOS ─── */
 if ($action === "usuarios") {
-    $res = $conn->query("SELECT id, usuario, tipo, creado_en FROM usuarios");
+    $res = $conn->query("SELECT id, usuario, tipo, creado_en, actualizado_en FROM usuarios");
     echo json_encode($res->fetch_all(MYSQLI_ASSOC));
 }
 
@@ -39,7 +39,7 @@ if ($action === "cambiar_password") {
     $id = $data["id"];
     $pass = md5($data["password"]);
 
-    $conn->query("UPDATE usuarios SET password='$pass' WHERE id=$id");
+    $conn->query("UPDATE usuarios SET password='$pass', actualizado_en=NOW() WHERE id=$id");
     echo json_encode(["ok"=>true]);
 }
 

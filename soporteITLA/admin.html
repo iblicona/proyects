@@ -342,13 +342,19 @@ async function cargarUsuarios() {
         const labelMap = { soporte: 'Soporte', alumno: 'Alumno', administrativo: 'Adm/Docente' };
 
         let html = `<table class="admin-table"><thead><tr>
-            <th>Usuario</th><th>Tipo</th><th>Creado</th><th>Acciones</th>
+            <th>Usuario</th><th>Tipo</th><th>Creado</th><th>Última modificación</th><th>Acciones</th>
         </tr></thead><tbody>`;
 
         data.forEach(u => {
             const fecha = u.creado_en
                 ? new Date(u.creado_en).toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })
                 : '—';
+            const actualizado = u.actualizado_en
+            ? new Date(u.actualizado_en).toLocaleString('es-MX', {
+                day:'2-digit', month:'short', year:'numeric',
+                hour:'2-digit', minute:'2-digit'
+            })
+            : '—';
             html += `<tr>
                 <td><b>${u.usuario}</b></td>
                 <td><span class="badge ${badgeMap[u.tipo] || 'badge-alumno'}">${labelMap[u.tipo] || u.tipo}</span></td>
