@@ -1,6 +1,6 @@
 <?php
 include("pruebaConexion.php");
-if(isset($_POST['enviar2'])) {
+if(isset($_POST['enviar3'])) {
     $nombre = $_POST['name'];
     $nombre_generico = $_POST['generic-name'];
     $tipo_dosis = $_POST['dose'];
