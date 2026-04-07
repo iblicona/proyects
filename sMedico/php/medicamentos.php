@@ -6,7 +6,7 @@ if(isset($_POST['enviar3'])) {
     $tipo_dosis = $_POST['dose'];
     $cantiddad = $_POST['quantity'];
     $presenyacion = $_POST['presentation'];
-    $sql1 = "INSERT INTO Medicamentos (medicamento, nombre_generico, dosis, cantidad, presentacion) 
+    $sql1 = "INSERT INTO Medicamentos (Medicamento, nombre_generico, dosis, cantidad, presentacion) 
             VALUES ('$nombre', '$nombre_generico', '$tipo_dosis', '$cantiddad', '$presenyacion')";
             if (mysqli_query($conn, $sql1)) {
         echo "Registro exitoso.";

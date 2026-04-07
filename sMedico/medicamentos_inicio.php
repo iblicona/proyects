@@ -26,7 +26,7 @@ if($conn) {
   </div>
   <div class="m-container">
     <h2>Agregar/Eliminar Medicamentos</h2><br>
-    <form id="add-form" action="medicamentos.php" method = "post">
+    <form id="add-form" action="php/medicamentos.php" method = "post">
 
         <label for="name">Nombre comercial:</label>
         <input type="text" id="name" name="name" required><br>
