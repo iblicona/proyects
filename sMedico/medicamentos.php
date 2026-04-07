@@ -47,7 +47,7 @@ if($conexion) {
         <label for="presentation">Presentación (mg):</label>
         <input type="number" id="presentation" name="presentation" min="1" required>
         
-        <button id="add-button" type="submit">Agregar</button>
+        <button id="enviar3" type="submit">Agregar</button>
     </form>
     <a href="img/inv_med.pdf" target="_blank"><img src="img/impresion.png" alt="impresion"></a>
   </div>
