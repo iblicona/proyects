@@ -7,7 +7,7 @@ let usuariosGlobal = [];
 // 🔹 OBTENER USUARIOS DESDE API
 async function obtenerUsuarios() {
   try {
-    const res = await fetch("./api/usuarios.php"); // ✅ FIX
+    const res = await fetch("api/usuarios.php"); // ✅ FIX
 
     if (!res.ok) throw new Error("Error al obtener datos");
 

@@ -12,10 +12,11 @@ include("/var/www/proyects/api/dbconection.php");
 // 🔌 CONEXIÓN
 if (!isset($conn)) {
 
-    $conn = new mysqli($host, $usuario, $password);
+    $conn = new mysqli($host, $usuario, $password, $base_datos);
 
     if ($conn->connect_error) {
-        die("Error de conexión: " . $conn->connect_error);
+        header('Content-Type: application/json');
+        die(json_encode(["error" => "Fallo conexión: " . $conn->connect_error]));
     }
 
     // 🔥 Opcional: forzar UTF-8
