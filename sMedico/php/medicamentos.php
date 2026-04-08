@@ -10,6 +10,7 @@ if(isset($_POST['enviar3'])) {
             VALUES ('$nombre', '$nombre_generico', '$tipo_dosis', '$cantiddad', '$presenyacion')";
             if (mysqli_query($conn, $sql1)) {
         echo "Registro exitoso.";
+        header("Location: medicamentos_inicio.php");
     } else {
         echo "Error: " . mysqli_error($conn);
     }
