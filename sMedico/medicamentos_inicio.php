@@ -1,7 +1,7 @@
 <?php
-include("pruebaConexion.php");
+include ("/var/www/proyects/api/dbconection.php");
 if($conn) {
-    $consulta = "SELECT * FROM `Medicamentos`";
+    $consulta = "SELECT * FROM Medicamentos";
     $resultado = mysqli_query($conn, $consulta);   
 }
 ?>
