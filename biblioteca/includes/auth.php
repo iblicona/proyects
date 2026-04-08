@@ -1,4 +1,5 @@
 <?php
+require 'config/db.php';
 session_start();
 function checkAuth() {
     if (!isset($_SESSION['user_id'])) {
