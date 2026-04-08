@@ -1,5 +1,5 @@
 <?php
-include ("/var/www/proyects/api/dbconection.php");
+include ("php/pruebaConexion.php");
 if($conn) {
     $consulta = "SELECT * FROM Medicamentos";
     $resultado = mysqli_query($conn, $consulta);   
