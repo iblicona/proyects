@@ -3,40 +3,37 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     const usuario  = document.getElementById("usuario").value.trim();
     const password = document.getElementById("password").value.trim();
-    const tipo     = document.getElementById("tipoUsuario").value;
 
     const btn = this.querySelector("button[type='submit']");
     btn.disabled = true;
     btn.textContent = "Verificando...";
 
     try {
-        // RUTA AJUSTADA: Directo a login.php
         const response = await fetch("login.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ usuario, password, tipo })
+            body: JSON.stringify({ usuario, password })
         });
 
         const data = await response.json();
 
         if (data.error) {
-            alert("Error: " + data.error);
+            alert(data.error);
             btn.disabled = false;
-            btn.textContent = "Iniciar Sesión";
+            btn.textContent = "Acceder al Sistema";
             return;
         }
 
-        // Guardamos sesión
+        // Guardar sesión y rol detectado
         localStorage.setItem("user_id", data.id);
         localStorage.setItem("rol", data.rol);
         localStorage.setItem("nombre", data.nombre);
 
-        // Redirección al panel principal
         window.location.href = "biblioteca.html"; 
 
     } catch (err) {
-        alert("Error de conexión con el servidor.");
+        alert("Error: No se pudo conectar con el servidor de AWS.");
         btn.disabled = false;
-        btn.textContent = "Iniciar Sesión";
+        btn.textContent = "Acceder al Sistema";
     }
 });
