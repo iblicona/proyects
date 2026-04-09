@@ -27,9 +27,9 @@
                                 <div class="card-body">
                                     <p class="card-text small">Administrar la tabla <code>persona</code>, asignar roles y cambiar estados (Activo/Suspendido/Baja).</p>
                                     <div class="d-grid gap-2">
-                                        <button class="btn btn-outline-primary btn-sm" onclick="alert('Simulación: Abriendo buscador de usuarios en la BD...')">Buscar / Editar Usuario</button>
-                                        <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalEstado">Actualizar Estado Institucional</button>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="alert('Simulación: Gestionando tabla usuario (Roles: admin, control, consulta)')">Gestionar Accesos al Sistema</button>
+                                        <a href="bd.html" class="btn btn-primary btn-sm fw-bold">🗄️ Gestionar Base de Datos (CRUD)</a>
+                                        <button class="btn btn-outline-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalEstado">Actualizar Estado Institucional</button>
+                                        <a href="bd.html" class="btn btn-outline-primary btn-sm">Gestionar Accesos al Sistema</a>
                                     </div>
                                 </div>
                             </div>
@@ -44,8 +44,7 @@
                                     <p class="card-text small">Gestión de la tabla <code>carrera</code>, grupos y restricciones de salida para preparatoria.</p>
                                     <div class="d-grid gap-2">
                                         <button class="btn btn-success btn-sm fw-bold" onclick="alert('Simulación: Módulo para cruzar horarios de grupos con horas de salida permitidas. (Pendiente en BD)')">Configurar Horarios (Preparatoria)</button>
-                                        <button class="btn btn-outline-success btn-sm" onclick="alert('Simulación: Gestionando tabla carrera')">Catálogo de Carreras</button>
-                                        <button class="btn btn-outline-success btn-sm" onclick="alert('Simulación: Gestionando niveles educativos')">Catálogo de Niveles</button>
+                                        <a href="bd.html" class="btn btn-outline-success btn-sm">Catálogo de Carreras y Niveles</a>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +149,7 @@
 
         <footer class="bg-dark text-white text-center py-3 mt-auto">
             <div class="container d-flex justify-content-between align-items-center">
-                <span>Sistema de Acceso</span>
+                <span>© 2026 ITLA - Sistema de Acceso Escolar Institucional - ITI</span>
                 <img src="../imagenes/imagen_2_para_mod.png" alt="ITLA Logo" height="30">
             </div>
         </footer>
