@@ -8,5 +8,4 @@ if(isset($_GET['id_medicamento'])) {
     echo "Registro eliminado correctamente";
     header("Location: ../medicamentos_inicio.php");
 }
-
 ?>
