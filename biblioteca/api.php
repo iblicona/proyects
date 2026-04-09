@@ -1,13 +1,11 @@
 <?php
-// Usamos el archivo de conexión de tu maestro (que crea la variable $conn)
 require 'config/db.php'; 
 session_start();
 header('Content-Type: application/json');
 
-// Verificación de sesión
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
-    die(json_encode(["error" => "No has iniciado sesión"]));
+    die(json_encode(["error" => "No autorizado"]));
 }
 
 $metodo = $_SERVER['REQUEST_METHOD'];
