@@ -11,10 +11,23 @@ const prestamoModal = prestamoModalEl ? new bootstrap.Modal(prestamoModalEl) : n
 const formLibro = document.getElementById('libroForm');
 const formPrestamo = document.getElementById('prestamoForm');
 
+// Datos de sesión (Desde localStorage para index.html)
+const userRol = localStorage.getItem('rol') || 'user';
+const userName = localStorage.getItem('nombre') || 'Usuario';
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Protección básica: Si no hay ID de usuario, al login
+    if (!localStorage.getItem('user_id')) {
+        window.location.href = 'login.php';
+        return;
+    }
+
+    // Cargar interfaz inicial
     cargarLibros();
+    cargarHistorial();
+
     if (userRol === 'admin') {
-        cargarSolicitudes(); // Solo el admin ve la bandeja de solicitudes
+        cargarSolicitudes();
     }
 });
 
@@ -34,7 +47,7 @@ async function cargarLibros() {
     }
 }
 
-// VISTA ADMINISTRADOR (Tabla con fechas y CRUD)
+// VISTA ADMINISTRADOR
 function renderizarTablaAdmin(libros) {
     const tabla = document.getElementById('tabla-libros');
     if(!tabla) return;
@@ -62,7 +75,7 @@ function renderizarTablaAdmin(libros) {
     });
 }
 
-// VISTA USUARIO (Agrupado por géneros con bloqueo de solicitud duplicada)
+// VISTA USUARIO (Agrupado por géneros)
 function renderizarGruposUsuario(libros) {
     const contenedor = document.getElementById('contenedor-generos');
     if(!contenedor) return;
@@ -80,15 +93,11 @@ function renderizarGruposUsuario(libros) {
         grupos[genero].forEach(l => {
             let btn = '';
 
-            // LÓGICA DE BOTONES PARA USUARIO
             if (l.prestado == 1) {
-                // Caso 1: El libro ya lo tiene alguien físicamente
                 btn = '<span class="badge bg-secondary">No disponible</span>';
             } else if (l.ya_solicitado > 0) {
-                // Caso 2: El usuario ya envió solicitud y el admin no ha respondido
                 btn = '<button class="btn btn-sm btn-warning" disabled>⏳ Solicitud enviada</button>';
             } else {
-                // Caso 3: Disponible para pedir
                 btn = `<button class="btn btn-sm btn-primary" onclick="abrirModalPrestamo(${l.id})">Solicitar</button>`;
             }
 
@@ -104,7 +113,7 @@ function renderizarGruposUsuario(libros) {
 
         contenedor.innerHTML += `
             <details class="mb-3 border rounded shadow-sm bg-white">
-                <summary class="p-3 fw-bold" style="cursor:pointer; list-style:none;">
+                <summary class="p-3 fw-bold">
                     📂 Género: ${genero.toUpperCase()} 
                     <span class="badge bg-dark float-end">${grupos[genero].length} libros</span>
                 </summary>
@@ -115,7 +124,41 @@ function renderizarGruposUsuario(libros) {
     }
 }
 
-// --- LOGICA DE FORMULARIOS (CRUD ADMIN) ---
+// --- HISTORIAL DE PRÉSTAMOS ---
+async function cargarHistorial() {
+    try {
+        const res = await fetch(apiUrl + '?historial=1');
+        const datos = await res.json();
+        const tabla = document.getElementById('tabla-historial');
+        if(!tabla) return;
+        tabla.innerHTML = '';
+
+        datos.forEach(h => {
+            let colorEstado = '';
+            switch(h.estado) {
+                case 'aprobado': colorEstado = 'text-success'; break;
+                case 'pendiente': colorEstado = 'text-warning'; break;
+                case 'rechazado': colorEstado = 'text-danger'; break;
+                case 'devuelto': colorEstado = 'text-primary'; break;
+            }
+
+            let colUsuario = (userRol === 'admin') ? `<td>${h.usuario}</td>` : '';
+            let fEntrega = h.fecha_entrega ? h.fecha_entrega : '<span class="text-muted">-</span>';
+
+            tabla.innerHTML += `
+                <tr>
+                    <td><strong>${h.libro}</strong></td>
+                    ${colUsuario}
+                    <td><small>${h.fecha_solicitud}</small></td>
+                    <td>${h.dias_solicitados} días</td>
+                    <td class="fw-bold ${colorEstado}">${h.estado.toUpperCase()}</td>
+                    <td>${fEntrega}</td>
+                </tr>`;
+        });
+    } catch (e) { console.error("Error historial:", e); }
+}
+
+// --- CRUD LIBROS ---
 if(formLibro) {
     formLibro.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -155,15 +198,13 @@ function prepararEdicion(l) {
 }
 
 async function eliminarLibro(id) {
-    if(confirm('¿Eliminar este libro definitivamente del sistema?')) {
-        const res = await fetch(`${apiUrl}?id=${id}`, { 
-            method: 'DELETE' 
-        });
-        if(res.ok) cargarLibros();
+    if(confirm('¿Eliminar este libro definitivamente?')) {
+        await fetch(`${apiUrl}?id=${id}`, { method: 'DELETE' });
+        cargarLibros();
     }
 }
 
-// --- LOGICA DE PRÉSTAMOS Y SOLICITUDES ---
+// --- SOLICITUDES Y PRÉSTAMOS ---
 function abrirModalPrestamo(id) {
     document.getElementById('prestamoLibroId').value = id;
     prestamoModal.show();
@@ -172,11 +213,8 @@ function abrirModalPrestamo(id) {
 if(formPrestamo) {
     formPrestamo.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const btnSubmit = e.target.querySelector('button[type="submit"]');
-        
-        // Bloqueo temporal para evitar envíos múltiples
-        btnSubmit.disabled = true;
-        btnSubmit.innerText = "Enviando...";
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
 
         const data = {
             id_libro: document.getElementById('prestamoLibroId').value,
@@ -190,11 +228,10 @@ if(formPrestamo) {
         });
         
         prestamoModal.hide();
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = "Enviar Solicitud";
-        
-        alert("Solicitud enviada. Se ha bloqueado el botón de este libro hasta que el admin autorice.");
+        btn.disabled = false;
         cargarLibros();
+        cargarHistorial();
+        alert("Solicitud enviada.");
     });
 }
 
@@ -207,28 +244,20 @@ async function cargarSolicitudes() {
 
     solicitudes.forEach(s => {
         let botones = '';
-        let estadoLabel = '';
-
         if (s.estado === 'pendiente') {
-            estadoLabel = '<span class="badge bg-warning text-dark">Pendiente</span>';
             botones = `
                 <button class="btn btn-sm btn-success w-100" onclick="decidirSolicitud(${s.id}, ${s.id_libro}, 'aprobar')">Aprobar</button>
                 <button class="btn btn-sm btn-danger w-100" onclick="decidirSolicitud(${s.id}, ${s.id_libro}, 'rechazar')">Rechazar</button>`;
         } else {
-            estadoLabel = '<span class="badge bg-success">En Préstamo</span>';
             botones = `<button class="btn btn-sm btn-info w-100" onclick="marcarDevolucion(${s.id}, ${s.id_libro})">Marcar Devuelto</button>`;
         }
 
         div.innerHTML += `
             <div class="col-md-4 mb-3">
-                <div class="card shadow-sm ${s.estado === 'aprobado' ? 'border-success' : ''}">
+                <div class="card shadow-sm border-0">
                     <div class="card-body">
                         <h6>${s.libro}</h6>
-                        <p class="small mb-2">
-                            <strong>Usuario:</strong> ${s.usuario}<br>
-                            <strong>Días:</strong> ${s.dias_solicitados}<br>
-                            <strong>Estado:</strong> ${estadoLabel}
-                        </p>
+                        <p class="small mb-2"><strong>Usuario:</strong> ${s.usuario}<br><strong>Días:</strong> ${s.dias_solicitados}</p>
                         <div class="d-flex gap-2">${botones}</div>
                     </div>
                 </div>
@@ -244,25 +273,22 @@ async function decidirSolicitud(idS, idL, accion) {
     });
     cargarSolicitudes();
     cargarLibros();
+    cargarHistorial();
 }
 
 async function marcarDevolucion(idS, idL) {
-    if(confirm('¿Confirmas que el libro ha sido devuelto físicamente?')) {
+    if(confirm('¿Marcar como devuelto físicamente?')) {
         await fetch(apiUrl, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                id_solicitud: idS, 
-                id_libro: idL, 
-                accion: 'devolver' 
-            })
+            body: JSON.stringify({ id_solicitud: idS, id_libro: idL, accion: 'devolver' })
         });
         cargarSolicitudes();
         cargarLibros();
+        cargarHistorial();
     }
 }
 
-// --- INTERFAZ ---
 function abrirModal() {
     formLibro.reset();
     document.getElementById('libroId').value = '';

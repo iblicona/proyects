@@ -1,23 +1,24 @@
 <?php
-// 🔐 CONFIGURACIÓN DE PRODUCCIÓN (AWS RDS)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Tus credenciales de AWS
 $host = "production.ccjgeakiwlqp.us-east-1.rds.amazonaws.com";
 $usuario = "axel";
 $password = "admin1234";
-$base_datos   = "library";
+$base_datos = "library";
 
-// 🔗 Tu inclusión especial de SSL/Configuración de servidor
+// Esta inclusión es la que realmente abre la conexión $conn
 include("/var/www/proyects/api/dbconection.php");
 
-try {
-    // Usamos PDO para que sea compatible con todo el api.php que hicimos
-    $pdo = new PDO("mysql:host=$host;dbname=$base_datos;charset=utf8mb4", $usuario, $password);
-    
-    // Configuración de errores para desarrollo/producción
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-} catch (PDOException $e) {
+// Verificamos si la conexión existe como lo hace él
+if (!isset($conn) || !$conn) {
     header('Content-Type: application/json');
-    die(json_encode(["error" => "Error de conexión al servidor: " . $e->getMessage()]));
+    die(json_encode([
+        "error" => "No se pudo establecer conexión con la base de datos"
+    ]));
 }
+
+// Aseguramos el charset
+$conn->set_charset("utf8");
 ?>
