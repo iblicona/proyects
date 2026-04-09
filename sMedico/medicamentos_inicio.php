@@ -84,7 +84,7 @@ if($conn) {
                     echo "<td>".$fila['dosis']."</td>";
                     echo "<td>".$fila['Cantidad']."</td>";
                     echo "<td>".$fila['Presentacion']."</td>";
-                    echo "<td><a href='EditarRegistro.php?id=".$fila['id_medicamento']."' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='php/editar.php?id=".$fila['id_medicamento']."' class='btn btn-sm btn-primary'>Editar</a></td>";
                     echo "<td><a href='php/eliminar.php?id=".$fila['id_medicamento']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
                     echo "</tr>";   
                 }
