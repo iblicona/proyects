@@ -1,12 +1,16 @@
  <?php
 include("pruebaConexion.php");
 
-if(isset($_GET['id_medicamento'])) {
-    $id = $_GET['id_medicamento'];
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']); // intval previene SQL injection
     $eliminar = "DELETE FROM Medicamentos WHERE id_medicamento = $id";
     $resultado = mysqli_query($conn, $eliminar);
-    echo "El id del elemento";
-    echo "Registro eliminado correctamente", $id;
-    header("Location: ../medicamentos_inicio.php");
+
+    if ($resultado) {
+        header("Location: ../medicamentos_inicio.php?msg=eliminado");
+    } else {
+        header("Location: ../medicamentos_inicio.php?error=1");
+    }
+    exit(); // IMPORTANTE: detener ejecución tras el redirect
 }
 ?>
