@@ -2,168 +2,38 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Biblioteca - Pro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Sistema de Biblioteca - ITLA</title>
     <style>
-        body { background-color: #f4f7f6; }
-        .table-admin { font-size: 0.85rem; }
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        
-        /* Estilos para las carpetas de géneros (Usuario) */
-        details summary { list-style: none; transition: 0.3s; border-radius: 8px; cursor: pointer; }
-        details summary::-webkit-details-marker { display: none; }
-        details[open] summary { border-bottom: 1px solid #dee2e6; border-bottom-left-radius: 0; border-bottom-right-radius: 0; background-color: #e9ecef !important; }
-        summary:hover { background-color: #f8f9fa; }
+        /* Tu CSS que me pasaste (el de fondo azul fuerte) */
+        body{ font-family: Arial, Helvetica, sans-serif; background: linear-gradient(135deg,#0a2a5e,#1e4c9a); height:100vh; display:flex; justify-content:center; align-items:center; margin:0; }
+        .container{ background:white; padding:40px; border-radius:12px; width:380px; text-align:center; box-shadow:0px 10px 25px rgba(0,0,0,0.3); }
+        .logo{ width:200px; margin-bottom:20px; }
+        h1{ font-size:20px; margin-bottom:25px; color:#0a2a5e; }
+        label{ display:block; text-align:left; margin-top:10px; font-weight:bold; }
+        input, select{ width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; }
+        button{ margin-top:20px; width:100%; padding:12px; border:none; border-radius:6px; background:#0a2a5e; color:white; font-size:16px; cursor:pointer; }
+        button:hover{ background:#143d85; }
+        .footer{ margin-top:15px; font-size:12px; color:#777; }
     </style>
 </head>
 <body>
-
-<nav class="navbar navbar-dark bg-dark px-4 shadow-sm">
-    <span class="navbar-brand">📚 Sistema de Biblioteca</span>
-    <div class="d-flex align-items-center">
-        <span class="text-white me-3 d-none d-md-inline">Bienvenido, <strong><?php echo $_SESSION['nombre']; ?></strong></span>
-        <a href="logout.php" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
-    </div>
-</nav>
-
-<div class="container-fluid px-4 mt-4">
-    <div class="row">
-        
-        <div class="col-12 mb-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                    <h5 class="mb-0 text-primary">Inventario de Libros</h5>
-                    <?php if ($_SESSION['rol'] == 'admin'): ?>
-                        <button class="btn btn-primary shadow-sm" onclick="abrirModal()">+ Registrar Libro</button>
-                    <?php endif; ?>
-                </div>
-                <div class="card-body">
-                    <?php if ($_SESSION['rol'] == 'admin'): ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle table-admin">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Título</th><th>Autor</th><th>Género / Editorial</th>
-                                        <th>Año</th><th>Estado</th><th>Registro</th><th>Modificación</th><th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-libros"></tbody>
-                            </table>
-                        </div>
-                    <?php else: ?>
-                        <div id="contenedor-generos">
-                            <p class="text-center text-muted">Cargando estanterías...</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <?php if ($_SESSION['rol'] == 'admin'): ?>
-        <div class="col-12 mb-5">
-            <hr class="my-4">
-            <div class="d-flex align-items-center mb-4">
-                <h4 class="text-secondary mb-0">🔔 Gestión de Préstamos y Entregas</h4>
-                <span class="badge bg-primary ms-3">Admin Panel</span>
-            </div>
-            <div id="lista-solicitudes" class="row"></div>
-        </div>
-        <?php endif; ?>
-
-        <div class="col-12 mb-5">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white py-3">
-                    <h5 class="mb-0">📜 Historial de Préstamos</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-striped align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Libro</th>
-                                    <?php if ($_SESSION['rol'] == 'admin') echo "<th>Usuario</th>"; ?>
-                                    <th>Fecha Solicitud</th>
-                                    <th>Plazo</th>
-                                    <th>Estado</th>
-                                    <th>Fecha Entrega</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-historial"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div> </div> <div class="modal fade" id="libroModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form id="libroForm" class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalTitulo">Datos del Libro</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="libroId">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Título</label>
-                    <input type="text" id="titulo" class="form-control" placeholder="Nombre del libro" required>
-                </div>
-                <div class="row">
-                    <div class="col-md-7 mb-3">
-                        <label class="form-label fw-bold">Autor</label>
-                        <input type="text" id="autor" class="form-control" placeholder="Nombre del autor" required>
-                    </div>
-                    <div class="col-md-5 mb-3">
-                        <label class="form-label fw-bold">Año</label>
-                        <input type="number" id="anio" class="form-control" placeholder="YYYY" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Género</label>
-                        <input type="text" id="genero" class="form-control" placeholder="Ej: Novela, Ciencia">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Editorial</label>
-                        <input type="text" id="editorial" class="form-control" placeholder="Editorial">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary px-4">Guardar Libro</button>
-            </div>
+    <div class="container">
+        <img src="img/logoitla.png" class="logo">
+        <h1>Sistema de Biblioteca</h1>
+        <form id="loginForm">
+            <label>Usuario (Correo)</label>
+            <input type="text" id="usuario" required placeholder="ejemplo@correo.com">
+            <label>Contraseña</label>
+            <input type="password" id="password" required>
+            <label>Tipo de usuario</label>
+            <select id="tipoUsuario">
+                <option value="user">Alumno / Lector</option>
+                <option value="admin">Administrador</option>
+            </select>
+            <button type="submit">Iniciar Sesión</button>
         </form>
+        <div class="footer">Instituto Tecnológico Latinoamericano</div>
     </div>
-</div>
-
-<div class="modal fade" id="prestamoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <form id="prestamoForm" class="modal-content shadow-lg">
-            <div class="modal-header bg-success text-white py-2">
-                <h6 class="modal-title">Confirmar Solicitud</h6>
-            </div>
-            <div class="modal-body text-center">
-                <input type="hidden" id="prestamoLibroId">
-                <p class="small text-muted mb-3">¿Por cuánto tiempo deseas el préstamo?</p>
-                <select id="diasPrestamo" class="form-select mb-2">
-                    <option value="3">3 días</option>
-                    <option value="7" selected>7 días</option>
-                    <option value="15">15 días</option>
-                </select>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="submit" class="btn btn-success w-100">Enviar Solicitud</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script> 
-    const userRol = "<?php echo $_SESSION['rol']; ?>"; 
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/app.js"></script>
+    <script src="js/login.js"></script>
 </body>
 </html>
