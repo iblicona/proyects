@@ -21,6 +21,7 @@ if(isset($_POST['enviar2'])) {
 
     if (mysqli_query($conn, $sql1) && mysqli_query($conn, $sql2)) {
         echo "Registro exitoso.";
+        header("Location: index.html");
     } else {
         echo "Error: " . mysqli_error($conn);
     }
