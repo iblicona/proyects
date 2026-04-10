@@ -1,16 +1,40 @@
 <?php
 require 'config/db.php'; 
-session_start();
 header('Content-Type: application/json');
 
+// Intentar sesión PHP primero; si no existe, usar los headers del frontend
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Fallback: si no hay sesión PHP activa, leer headers enviados por app.js
+if (!isset($_SESSION['user_id'])) {
+    $header_id  = $_SERVER['HTTP_X_USER_ID']  ?? null;
+    $header_rol = $_SERVER['HTTP_X_USER_ROL'] ?? null;
+
+    if ($header_id && $header_rol) {
+        // Verificar que el usuario realmente exista en la BD antes de confiar en el header
+        $check = $conn->prepare("SELECT id, rol FROM usuarios WHERE id = ?");
+        $check->bind_param("i", $header_id);
+        $check->execute();
+        $row = $check->get_result()->fetch_assoc();
+
+        if ($row) {
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['rol']     = $row['rol']; // Usamos el rol de la BD, no el del header (más seguro)
+        }
+    }
+}
+
+// Si después de todo no hay sesión, rechazar
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     die(json_encode(["error" => "No autorizado"]));
 }
 
-$metodo = $_SERVER['REQUEST_METHOD'];
-$rol = $_SESSION['rol'] ?? 'user';
-$id_sesion = $_SESSION['user_id'];
+$metodo    = $_SERVER['REQUEST_METHOD'];
+$rol       = $_SESSION['rol'] ?? 'user';
+$id_sesion = (int)$_SESSION['user_id'];
 
 switch($metodo) {
     case 'GET':
@@ -61,15 +85,14 @@ switch($metodo) {
         if ($rol !== 'admin') die(json_encode(["error" => "No autorizado"]));
         $data = json_decode(file_get_contents("php://input"), true);
         
-        // Limpiamos los datos para evitar errores por comillas
-        $t = mysqli_real_escape_string($conn, $data['titulo']);
-        $a = mysqli_real_escape_string($conn, $data['autor']);
-        $g = mysqli_real_escape_string($conn, $data['genero']);
-        $e = mysqli_real_escape_string($conn, $data['editorial']);
-        $an = mysqli_real_escape_string($conn, $data['anio']);
+        $t  = mysqli_real_escape_string($conn, $data['titulo']    ?? '');
+        $a  = mysqli_real_escape_string($conn, $data['autor']     ?? '');
+        $g  = mysqli_real_escape_string($conn, $data['genero']    ?? '');
+        $e  = mysqli_real_escape_string($conn, $data['editorial'] ?? '');
+        $an = mysqli_real_escape_string($conn, $data['anio']      ?? '');
 
         if (!empty($data['id'])) {
-            $id = $data['id'];
+            $id  = (int)$data['id'];
             $sql = "UPDATE libros SET titulo='$t', autor='$a', genero='$g', editorial='$e', anio='$an' WHERE id=$id";
         } else {
             $sql = "INSERT INTO libros (titulo, autor, genero, editorial, anio) VALUES ('$t', '$a', '$g', '$e', '$an')";
@@ -80,8 +103,8 @@ switch($metodo) {
 
     case 'PATCH':
         $data = json_decode(file_get_contents("php://input"), true);
-        $lib = (int)$data['id_libro']; 
-        $d = (int)$data['dias_prestamo'];
+        $lib  = (int)($data['id_libro']      ?? 0);
+        $d    = (int)($data['dias_prestamo'] ?? 7);
         
         $sql = "INSERT INTO prestamos (id_usuario, id_libro, dias_solicitados, estado) 
                 VALUES ($id_sesion, $lib, $d, 'pendiente')";
@@ -92,9 +115,9 @@ switch($metodo) {
     case 'PUT':
         if ($rol !== 'admin') die(json_encode(["error" => "No autorizado"]));
         $data = json_decode(file_get_contents("php://input"), true);
-        $ids = (int)$data['id_solicitud']; 
-        $idl = (int)$data['id_libro']; 
-        $acc = $data['accion'];
+        $ids  = (int)($data['id_solicitud'] ?? 0);
+        $idl  = (int)($data['id_libro']     ?? 0);
+        $acc  = $data['accion'] ?? '';
 
         if ($acc === 'aprobar') {
             mysqli_query($conn, "UPDATE prestamos SET estado='aprobado', fecha_entrega=CURDATE() WHERE id=$ids");
@@ -112,7 +135,7 @@ switch($metodo) {
 
     case 'DELETE':
         if ($rol !== 'admin') die(json_encode(["error" => "No autorizado"]));
-        $id = (int)$_GET['id'];
+        $id = (int)($_GET['id'] ?? 0);
         mysqli_query($conn, "DELETE FROM libros WHERE id = $id");
         echo json_encode(["status" => "eliminado"]);
         break;

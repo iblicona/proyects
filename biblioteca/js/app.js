@@ -1,26 +1,30 @@
 const apiUrl = 'api.php';
 
-// Modales de Bootstrap
-const libroModalEl = document.getElementById('libroModal');
-const libroModal = libroModalEl ? new bootstrap.Modal(libroModalEl) : null;
-
-const prestamoModalEl = document.getElementById('prestamoModal');
-const prestamoModal = prestamoModalEl ? new bootstrap.Modal(prestamoModalEl) : null;
-
-// Formularios
+// Formularios (estos sí están en el HTML estático, se pueden tomar aquí)
 const formLibro = document.getElementById('libroForm');
 const formPrestamo = document.getElementById('prestamoForm');
 
-// Datos de sesión (Desde localStorage para index.html)
+// Datos de sesión
 const userRol = localStorage.getItem('rol') || 'user';
 const userName = localStorage.getItem('nombre') || 'Usuario';
+const userId = localStorage.getItem('user_id');
+
+// Modales — se inicializan dentro de DOMContentLoaded para que el DOM ya exista
+let libroModal = null;
+let prestamoModal = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Protección básica: Si no hay ID de usuario, al login
-    if (!localStorage.getItem('user_id')) {
-        window.location.href = 'login.php';
+    // Protección básica
+    if (!userId) {
+        window.location.href = 'index.html';
         return;
     }
+
+    // Inicializar modales AQUÍ, cuando el DOM ya cargó
+    const libroModalEl = document.getElementById('libroModal');
+    const prestamoModalEl = document.getElementById('prestamoModal');
+    libroModal = libroModalEl ? new bootstrap.Modal(libroModalEl) : null;
+    prestamoModal = prestamoModalEl ? new bootstrap.Modal(prestamoModalEl) : null;
 
     // Cargar interfaz inicial
     cargarLibros();
@@ -31,10 +35,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Headers comunes para todas las peticiones — incluye user_id para que api.php lo identifique
+function getHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'X-User-Id': userId,
+        'X-User-Rol': userRol
+    };
+}
+
 // --- FUNCIÓN PRINCIPAL: CARGAR LIBROS ---
 async function cargarLibros() {
     try {
-        const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl, { headers: getHeaders() });
+        
+        if (res.status === 401) {
+            // Sesión expirada en el servidor
+            localStorage.clear();
+            window.location.href = 'index.html';
+            return;
+        }
+
         const libros = await res.json();
         
         if (userRol === 'admin') {
@@ -52,6 +73,11 @@ function renderizarTablaAdmin(libros) {
     const tabla = document.getElementById('tabla-libros');
     if(!tabla) return;
     tabla.innerHTML = '';
+
+    if (libros.length === 0) {
+        tabla.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">No hay libros registrados aún.</td></tr>';
+        return;
+    }
 
     libros.forEach(l => {
         let badge = (l.prestado == 1) 
@@ -80,6 +106,11 @@ function renderizarGruposUsuario(libros) {
     const contenedor = document.getElementById('contenedor-generos');
     if(!contenedor) return;
     contenedor.innerHTML = '';
+
+    if (libros.length === 0) {
+        contenedor.innerHTML = '<p class="text-center text-muted">No hay libros disponibles.</p>';
+        return;
+    }
 
     const grupos = {};
     libros.forEach(l => {
@@ -127,11 +158,16 @@ function renderizarGruposUsuario(libros) {
 // --- HISTORIAL DE PRÉSTAMOS ---
 async function cargarHistorial() {
     try {
-        const res = await fetch(apiUrl + '?historial=1');
+        const res = await fetch(apiUrl + '?historial=1', { headers: getHeaders() });
         const datos = await res.json();
         const tabla = document.getElementById('tabla-historial');
         if(!tabla) return;
         tabla.innerHTML = '';
+
+        if (datos.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Sin movimientos registrados.</td></tr>';
+            return;
+        }
 
         datos.forEach(h => {
             let colorEstado = '';
@@ -164,6 +200,7 @@ if(formLibro) {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
         btn.disabled = true;
+        btn.textContent = 'Guardando...';
 
         const data = {
             id: document.getElementById('libroId').value,
@@ -176,11 +213,12 @@ if(formLibro) {
         
         await fetch(apiUrl, { 
             method: 'POST', 
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data) 
         });
         
         btn.disabled = false;
+        btn.textContent = 'Guardar Cambios';
         libroModal.hide();
         cargarLibros();
     });
@@ -199,7 +237,7 @@ function prepararEdicion(l) {
 
 async function eliminarLibro(id) {
     if(confirm('¿Eliminar este libro definitivamente?')) {
-        await fetch(`${apiUrl}?id=${id}`, { method: 'DELETE' });
+        await fetch(`${apiUrl}?id=${id}`, { method: 'DELETE', headers: getHeaders() });
         cargarLibros();
     }
 }
@@ -223,7 +261,7 @@ if(formPrestamo) {
         
         await fetch(apiUrl, { 
             method: 'PATCH', 
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data) 
         });
         
@@ -236,11 +274,16 @@ if(formPrestamo) {
 }
 
 async function cargarSolicitudes() {
-    const res = await fetch(apiUrl + '?solicitudes=1');
+    const res = await fetch(apiUrl + '?solicitudes=1', { headers: getHeaders() });
     const solicitudes = await res.json();
     const div = document.getElementById('lista-solicitudes');
     if(!div) return;
     div.innerHTML = '';
+
+    if (solicitudes.length === 0) {
+        div.innerHTML = '<p class="text-muted text-center w-100">No hay solicitudes activas.</p>';
+        return;
+    }
 
     solicitudes.forEach(s => {
         let botones = '';
@@ -268,7 +311,7 @@ async function cargarSolicitudes() {
 async function decidirSolicitud(idS, idL, accion) {
     await fetch(apiUrl, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getHeaders(),
         body: JSON.stringify({ id_solicitud: idS, id_libro: idL, accion: accion })
     });
     cargarSolicitudes();
@@ -280,7 +323,7 @@ async function marcarDevolucion(idS, idL) {
     if(confirm('¿Marcar como devuelto físicamente?')) {
         await fetch(apiUrl, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify({ id_solicitud: idS, id_libro: idL, accion: 'devolver' })
         });
         cargarSolicitudes();
@@ -290,6 +333,7 @@ async function marcarDevolucion(idS, idL) {
 }
 
 function abrirModal() {
+    if (!libroModal) return;
     formLibro.reset();
     document.getElementById('libroId').value = '';
     document.getElementById('modalTitulo').innerText = 'Registrar Nuevo Libro';
