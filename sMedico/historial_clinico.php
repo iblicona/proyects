@@ -44,13 +44,13 @@ if($conn) {
             if ($num_rows > 0) {
                 while ($fila = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
-                    echo "<td>".$fila['id_alumno']."</td>";
-                    echo "<td>".$fila['nombre']."</td>";
+                    echo "<td>".$fila['id_alumnos']."</td>";
+                    echo "<td>".$fila['name']."</td>";
                     echo "<td>".$fila['matricula']."</td>";
-                    echo "<td>".$fila['padecimientos']."</td>";
+                    echo "<td>".$fila['alergias']."</td>";
                     echo "<td>".$fila['contacto_emergencia']."</td>";
-                    echo "<td><a href='php/editar.php?id=".$fila['id_alumno']."' class='btn btn-sm btn-primary'>Editar</a></td>";
-                    echo "<td><a href='php/eliminar.php?id=".$fila['id_alumno']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
+                    echo "<td><a href='php/editar.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='php/eliminar.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
                     echo "</tr>";   
                 }
             } else {
