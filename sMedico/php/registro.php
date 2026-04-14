@@ -9,7 +9,7 @@ if(isset($_POST['enviar'])) {
     $correoI = $_POST['correo'];
     $telefono = $_POST['celular'];
     $escolaridad = $_POST['escolaridad'];
-    $fecha_nacimiento = $_POST['fecha_nacimiento'];
+    $fecha_nacimiento = $_POST['birth'];
     $direccion = $_POST['address'];
     $contactoE = $_POST['emergency_contact'];
     $alergias = $_POST['alergies'];
