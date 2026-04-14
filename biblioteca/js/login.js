@@ -1,11 +1,14 @@
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+// js/login.js
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const usuario  = document.getElementById("usuario").value.trim();
     const password = document.getElementById("password").value.trim();
+    const btn      = document.getElementById("btnLogin");
+    const msgError = document.getElementById("msg-error");
 
-    const btn = this.querySelector("button[type='submit']");
-    btn.disabled = true;
+    msgError.textContent = "";
+    btn.disabled    = true;
     btn.textContent = "Verificando...";
 
     try {
@@ -18,22 +21,23 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         const data = await response.json();
 
         if (data.error) {
-            alert(data.error);
-            btn.disabled = false;
+            msgError.textContent = "⚠ " + data.error;
+            btn.disabled    = false;
             btn.textContent = "Acceder al Sistema";
             return;
         }
 
-        // Guardar sesión y rol detectado
+        // Guardar datos de sesión en localStorage
         localStorage.setItem("user_id", data.id);
-        localStorage.setItem("rol", data.rol);
-        localStorage.setItem("nombre", data.nombre);
+        localStorage.setItem("rol",     data.rol);
+        localStorage.setItem("nombre",  data.nombre);
 
-        window.location.href = "biblioteca.html"; 
+        // Redirigir al panel
+        window.location.href = "biblioteca.html";
 
     } catch (err) {
-        alert("Error: No se pudo conectar con el servidor de AWS.");
-        btn.disabled = false;
+        msgError.textContent = "⚠ No se pudo conectar con el servidor.";
+        btn.disabled    = false;
         btn.textContent = "Acceder al Sistema";
     }
 });
