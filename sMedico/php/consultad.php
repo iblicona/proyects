@@ -19,3 +19,4 @@ if(isset($_POST['enviarconsultad'])) {
         echo "Error: " . mysqli_error($conn);
     }
  }
+?>

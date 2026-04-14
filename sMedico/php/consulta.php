@@ -14,9 +14,9 @@ if(isset($_POST['enviarconsulta'])) {
             VALUES ('$matricula', '$name', '$genero', '$escolaridad', '$sintomas', '$fechac', '$presion', '$temperatura', '$medicamentoDosis')";
             if (mysqli_query($conn, $sql1)) {
         echo "Registro exitoso.";
-        header("Location: ../consulta.html");
+        header("Location: ../consulta.php");
     } else {
         echo "Error: " . mysqli_error($conn);
     }
  }
-
+?>
