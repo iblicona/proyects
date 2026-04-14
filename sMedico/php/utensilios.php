@@ -13,3 +13,4 @@ if(isset($_POST['enviarconsulta'])) {
         echo "Error: " . mysqli_error($conn);
     }
  }
+?>
