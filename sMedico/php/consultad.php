@@ -10,7 +10,7 @@ if(isset($_POST['enviarconsultad'])) {
     $presion = $_POST['presion'];
     $temperatura = $_POST['temperatura'];
     $medicamentoDosis = $_POST['medidosis'];
-    $sql1 = "INSERT INTO consultad (matricula, name, genero, escolaridad, sintomas, fechac, presion, temperatura, medicamentoDosis) 
+    $sql1 = "INSERT INTO consulta_docente (matricula, name, genero, escolaridad, sintomas, fecha, presion, temperatura, medicamentoDosis) 
             VALUES ('$matricula', '$name', '$genero', '$escolaridad', '$sintomas', '$fechac', '$presion', '$temperatura', '$medicamentoDosis')";
             if (mysqli_query($conn, $sql1)) {
         echo "Registro exitoso.";
