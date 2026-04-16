@@ -69,7 +69,7 @@ if($conn) {
                 while ($fila = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
                     echo "<td>".$fila['id_utensilios']."</td>";
-                    echo "<td>".$fila['nombre']."</td>";
+                    echo "<td>".$fila['matricula']."</td>";
                     echo "<td>".$fila['tipo']."</td>";
                     echo "<td>".$fila['cantidad']."</td>";
                     echo "<td><a href='php/editaru.php?id=".$fila['id_utensilios']."' class='btn btn-sm btn-primary'>Editar</a></td>";

@@ -5,12 +5,12 @@ include("pruebaConexion.php");
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_utensilio'])) {
 
     $id        = intval($_POST['id_utensilio']);
-    $nombre    = mysqli_real_escape_string($conn, $_POST['nombre']);
+    $nombre    = mysqli_real_escape_string($conn, $_POST['matricula']);
     $tipo      = mysqli_real_escape_string($conn, $_POST['tipo']);
     $cantidad  = intval($_POST['cantidad']);
 
     $sql = "UPDATE Utensilios SET
-                nombre = '$nombre',
+                matricula = '$nombre',
                 `tipo` = '$tipo',
                 cantidad = $cantidad
             WHERE id_utensilio = $id";
