@@ -8,7 +8,7 @@ if(isset($_POST['agregaru'])) {
             VALUES ('$matricula', '$tipo', '$cantidad')";
             if (mysqli_query($conn, $sql1)) {
         echo "Registro exitoso.";
-        header("Location: ../consulta.html");
+        header("Location: ../utensilios.php?msg=agregado");
     } else {
         echo "Error: " . mysqli_error($conn);
     }

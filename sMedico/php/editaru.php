@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_utensilio'])) {
 
     $sql = "UPDATE Utensilios SET
                 nombre = '$nombre',
-                `Tipo_material` = '$tipo',
+                `tipo` = '$tipo',
                 cantidad = $cantidad
             WHERE id_utensilio = $id";
 
