@@ -3,7 +3,7 @@ include("pruebaConexion.php");
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']); // intval previene SQL injection
-    $eliminar = "DELETE FROM utensilios WHERE id_utensilio = $id";
+    $eliminar = "DELETE FROM Utensilios WHERE id_utensilio = $id";
     $resultado = mysqli_query($conn, $eliminar);
 
     if ($resultado) {
