@@ -1,3 +1,10 @@
+<?php
+include ("php/pruebaConexion.php");
+if($conn) {
+    $consulta = "SELECT * FROM utensilios";
+    $resultado = mysqli_query($conn, $consulta);   
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,7 +41,7 @@
         <input type="number" id="quantity" name="quantity" min="1" required>
         
        <input type="submit" name="agregaru" id="agregaru" value="AGREGAR">
-    </form>
+     </form>
     <a href="img/reg_ut.pdf" target="_blank"><img src="img/impresion.png" alt="impresion"></a>
   </div>
     
@@ -55,6 +62,28 @@
         </tr>
       </thead>
       <tbody id="inventory-tbody"></tbody>
+      <?php
+        if ($resultado) {
+            $num_rows = mysqli_num_rows($resultado);
+            if ($num_rows > 0) {
+                while ($fila = mysqli_fetch_assoc($resultado)) {
+                    echo "<tr>";
+                    echo "<td>".$fila['id_utensilio']."</td>";
+                    echo "<td>".$fila['nombre']."</td>";
+                    echo "<td>".$fila['Tipo_material']."</td>";
+                    echo "<td>".$fila['cantidad']."</td>";
+                    echo "<td>".$fila['accion']."</td>";
+                    echo "<td><a href='php/editaru.php?id=".$fila['id_utensilio']."' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='php/eliminaru.php?id=".$fila['id_utensilio']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
+                    echo "</tr>";   
+                }
+            } else {
+                echo "<tr><td colspan='8'>No se encontraron registros.</td></tr>";
+            }
+        } else {
+            echo "<tr><td colspan='8'>Error en la consulta.</td></tr>";
+        }
+        ?>
     </table>
 
 </body>

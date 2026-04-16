@@ -31,6 +31,7 @@ if($conn) {
     <table id="inventory-table">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Nombre</th>
                 <th>Matrícula</th>
                 <th>Padecimientos</th>
@@ -49,8 +50,8 @@ if($conn) {
                     echo "<td>".$fila['matricula']."</td>";
                     echo "<td>".$fila['alergias']."</td>";
                     echo "<td>".$fila['contacto_emergencia']."</td>";
-                    echo "<td><a href='php/editar.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-primary'>Editar</a></td>";
-                    echo "<td><a href='php/eliminar.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
+                    echo "<td><a href='php/editarh.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='php/eliminarh.php?id=".$fila['id_alumnos']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
                     echo "</tr>";   
                 }
             } else {

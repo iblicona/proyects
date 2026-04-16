@@ -7,20 +7,21 @@
     <link href="css/smcss.css" rel="stylesheet">
 </head>
 <body>
-    <div class = "cons-container-fluid">
+    <div class="cons-container-fluid">
         <span>Consulta</span>
         <a href="opciones.html">Volver al menú</a>
     </div>
     <div class="cons-container">
-         <form id="add-form" action="php/consulta.php" method = "post"></form>
+        <!-- BUG CORREGIDO: </form> estaba justo después del <form>, dejando todos los campos fuera -->
+        <form id="add-form" action="php/consulta.php" method="post">
             <div class="cons-row">
                 <div class="cons-column">
                     <label for="matricula">Matrícula:</label>
                     <input type="number" id="matricula" name="matricula" required>
-    
+
                     <label for="name">Nombre del alumno:</label>
                     <input type="text" id="name" name="name" required>
-    
+
                     <label for="genero">Género:</label>
                     <select id="genero" name="genero" required>
                         <option value="">Selecciona un género</option>
@@ -28,29 +29,30 @@
                         <option value="femenino">Femenino</option>
                         <option value="otro">Otro</option>
                     </select>
-    
+
                     <label for="escolaridad">Escolaridad</label>
                     <input type="text" id="escolaridad" name="escolaridad" required>
-    
+
                     <label for="sintomas">Síntomas y Observaciones:</label>
                     <textarea id="sintomas" name="sintomas" required></textarea>
                 </div>
                 <div class="cons-column">
                     <label for="appointment-date">Fecha de cita:</label>
                     <input type="date" id="appointment-date" name="appointment-date" required>
-    
+
                     <label for="presion">Presión:</label>
                     <input type="number" id="presion" name="presion" placeholder="mmHg" required>
+
                     <label for="temperatura">Temperatura:</label>
                     <input type="number" id="temperatura" name="temperatura" placeholder="Cº" required>
-    
+
                     <label for="medidosis">Medicamentos y dosis:</label>
                     <textarea id="medidosis" name="medidosis" required></textarea>
                 </div>
             </div>
             <div class="button-row">
-                <input type="submit" name="enviarconsulta" id="enviarconsulta" value="enviar">
-            <button type="reset" onclick="this.form.reset(); return false;">Reestablecer</button>
+                <input type="submit" name="enviarconsulta" id="enviarconsulta" value="Enviar">
+                <button type="reset">Reestablecer</button>
             </div>
         </form>
     </div>

@@ -1,6 +1,6 @@
 <?php
 include("pruebaConexion.php");
-if(isset($_POST['enviarconsulta'])) {
+if(isset($_POST['agregaru'])) {
     $matricula = $_POST['matricula'];
     $tipo = $_POST['disposable'];
     $cantidad = $_POST['quantity'];
