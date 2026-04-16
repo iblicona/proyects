@@ -1,7 +1,7 @@
 <?php
 include ("php/pruebaConexion.php");
 if($conn) {
-    $consulta = "SELECT * FROM utensilios";
+    $consulta = "SELECT * FROM Utensilios";
     $resultado = mysqli_query($conn, $consulta);   
 }
 ?>
