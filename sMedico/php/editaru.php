@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_utensilio'])) {
     $tipo      = mysqli_real_escape_string($conn, $_POST['tipo']);
     $cantidad  = intval($_POST['cantidad']);
 
-    $sql = "UPDATE utensilios SET
+    $sql = "UPDATE Utensilios SET
                 nombre = '$nombre',
                 `Tipo_material` = '$tipo',
                 cantidad = $cantidad
@@ -28,7 +28,7 @@ $utensilio = null;
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
-    $res = mysqli_query($conn, "SELECT * FROM utensilios WHERE id_utensilio = $id");
+    $res = mysqli_query($conn, "SELECT * FROM Utensilios WHERE id_utensilio = $id");
 
     if ($res) {
         $utensilio = mysqli_fetch_assoc($res);
