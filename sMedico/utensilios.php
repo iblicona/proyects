@@ -55,10 +55,10 @@ if($conn) {
     <table id="inventory-table">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Tipo de material</th>
           <th>Cantidad</th>
-          <th>Acción</th>
         </tr>
       </thead>
       <tbody id="inventory-tbody"></tbody>
@@ -68,13 +68,12 @@ if($conn) {
             if ($num_rows > 0) {
                 while ($fila = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
-                    echo "<td>".$fila['id_utensilio']."</td>";
+                    echo "<td>".$fila['id_utensilios']."</td>";
                     echo "<td>".$fila['nombre']."</td>";
-                    echo "<td>".$fila['Tipo_material']."</td>";
+                    echo "<td>".$fila['tipo']."</td>";
                     echo "<td>".$fila['cantidad']."</td>";
-                    echo "<td>".$fila['accion']."</td>";
-                    echo "<td><a href='php/editaru.php?id=".$fila['id_utensilio']."' class='btn btn-sm btn-primary'>Editar</a></td>";
-                    echo "<td><a href='php/eliminaru.php?id=".$fila['id_utensilio']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
+                    echo "<td><a href='php/editaru.php?id=".$fila['id_utensilios']."' class='btn btn-sm btn-primary'>Editar</a></td>";
+                    echo "<td><a href='php/eliminaru.php?id=".$fila['id_utensilios']."' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este registro?\");'>Eliminar</a></td>";
                     echo "</tr>";   
                 }
             } else {
