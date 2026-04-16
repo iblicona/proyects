@@ -46,7 +46,7 @@ if($conn) {
                 while ($fila = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
                     echo "<td>".$fila['id_alumnos']."</td>";
-                    echo "<td>".$fila['name']."</td>";
+                    echo "<td>".$fila['nombre_alumno']."</td>";
                     echo "<td>".$fila['matricula']."</td>";
                     echo "<td>".$fila['alergias']."</td>";
                     echo "<td>".$fila['contacto_emergencia']."</td>";
