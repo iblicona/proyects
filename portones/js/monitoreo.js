@@ -1,103 +1,116 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const formBusqueda   = document.getElementById('formBusqueda');
-    const inputMatricula = document.getElementById('buscar_matricula');
     const tablaBody      = document.getElementById('tabla_monitoreo');
+    const inputMatricula = document.getElementById('buscar_matricula');
+    const formBusqueda   = document.getElementById('formBusqueda');
+    const badgeServidor  = document.getElementById('badge_servidor');
+    let   intervalo      = null;
 
-    formBusqueda.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // ── Cargar datos reales desde monitoreo.php ───────────────────────────────
+    async function cargarDatos() {
+        try {
+            const res = await fetch(`${API_URL}/monitoreo.php`);
+            const data = await res.json();
 
-        const matricula = inputMatricula.value.trim();
-        if (!matricula) {
-            alert('Por favor, ingresa una matrícula o ID válida.');
+            if (!data.ok) return;
+
+            // Actualizar badge servidor
+            if (badgeServidor) {
+                badgeServidor.textContent = 'Servidor BD: Conectado';
+                badgeServidor.className   = 'badge bg-success me-3';
+            }
+
+            // Filtrar si hay búsqueda activa
+            const filtro = inputMatricula.value.trim().toLowerCase();
+            const registros = filtro
+                ? data.registros.filter(r =>
+                    (r.matricula ?? '').toLowerCase().includes(filtro) ||
+                    (r.nombre    ?? '').toLowerCase().includes(filtro))
+                : data.registros;
+
+            renderTabla(registros);
+            renderStats(data.stats);
+
+        } catch (err) {
+            console.error('Error cargando monitoreo:', err);
+            if (badgeServidor) {
+                badgeServidor.textContent = 'Servidor BD: Error';
+                badgeServidor.className   = 'badge bg-danger me-3';
+            }
+        }
+    }
+
+    // ── Renderizar tabla ──────────────────────────────────────────────────────
+    function renderTabla(registros) {
+        if (!registros.length) {
+            tablaBody.innerHTML = `
+                <tr><td colspan="7" class="text-center text-muted py-4">
+                    Sin registros de acceso hoy.
+                </td></tr>`;
             return;
         }
 
-        // Determinar tipo de evento: si ya hay una fila "Adentro" para esa matrícula → es salida
-        const filaExistente = tablaBody.querySelector(`[data-matricula="${matricula}"]`);
-        const tipo_evento = (filaExistente && filaExistente.dataset.estado === 'adentro')
-            ? 'salida'
-            : 'entrada';
+        tablaBody.innerHTML = registros.map(r => {
+            const estados = {
+                activo:    'bg-success',
+                suspendido:'bg-danger',
+                baja:      'bg-dark',
+                egresado:  'bg-secondary'
+            };
+            const badgeEstado = `<span class="badge ${estados[r.estado_institucional] ?? 'bg-secondary'}">${r.estado_institucional ?? 'N/A'}</span>`;
 
-        try {
-            const res = await enviarDatos('acceso.php', { matricula, tipo_evento });
-            inputMatricula.value = '';
+            const perfil = r.tipo_persona === 'alumno'
+                ? (r.id_nivel == 1 ? 'Alumno (Preparatoria)' : 'Alumno (Universidad)')
+                : (r.tipo_persona === 'docente' ? 'Docente' : 'Administrativo');
 
-            if (!res) {
-                alert('Sin respuesta del servidor.');
-                return;
+            let badgeAcceso, clsRow = '';
+            const sinSalida = !r.hora_salida && r.tipo_registro === 'entrada';
+            if (r.estado_institucional !== 'activo') {
+                badgeAcceso = `<span class="badge bg-danger">Acceso Bloqueado</span>`;
+                clsRow = 'class="table-danger"';
+            } else if (sinSalida) {
+                badgeAcceso = `<span class="badge bg-primary">Adentro</span>`;
+            } else {
+                badgeAcceso = `<span class="badge bg-secondary">Salió</span>`;
             }
 
-            // Renderizar resultado en la tabla
-            renderizarFila(res, tipo_evento);
+            const horaSalida = r.hora_salida
+                ? `<span>${r.hora_salida}</span>`
+                : (r.tipo_registro === 'salida' && !r.hora_entrada
+                    ? `<span class="text-danger fw-bold">${r.hora_salida ?? '-'} (Intento)</span>`
+                    : '-');
 
-        } catch (err) {
-            alert('No se pudo conectar con el servidor.');
-        }
-    });
+            return `<tr ${clsRow}>
+                <td>${r.nombre ?? '-'}</td>
+                <td>${perfil}</td>
+                <td>${r.matricula ?? '-'}</td>
+                <td>${badgeEstado}</td>
+                <td>${r.hora_entrada ?? '-'}</td>
+                <td>${horaSalida}</td>
+                <td>${badgeAcceso}</td>
+            </tr>`;
+        }).join('');
+    }
 
-    /**
-     * Inserta o actualiza una fila en #tabla_monitoreo con el resultado del acceso.
-     * @param {Object} res      - Respuesta de acceso.php
-     * @param {string} tipo_evento - 'entrada' | 'salida'
-     */
-    function renderizarFila(res, tipo_evento) {
-        const ahora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-
-        // Eliminar fila previa de la misma matrícula si existe
-        const filaAnterior = tablaBody.querySelector(`[data-matricula="${res.matricula}"]`);
-        if (filaAnterior) filaAnterior.remove();
-
-        // Badge de estado institucional
-        let badgeEstado = '';
-        const estados = {
-            activo:    'bg-success',
-            suspendido:'bg-danger',
-            baja:      'bg-dark',
-            egresado:  'bg-secondary'
-        };
-        const claseEstado = estados[res.estado_institucional] || 'bg-secondary';
-        badgeEstado = `<span class="badge ${claseEstado}">${res.estado_institucional ?? 'N/A'}</span>`;
-
-        // Badge de estado de acceso
-        let badgeAcceso = '';
-        let clsRow      = '';
-        if (!res.permitido) {
-            badgeAcceso = `<span class="badge bg-danger">Denegado</span>`;
-            clsRow      = 'table-danger';
-        } else if (tipo_evento === 'salida') {
-            badgeAcceso = `<span class="badge bg-secondary">Salió</span>`;
-        } else {
-            badgeAcceso = `<span class="badge bg-primary">Adentro</span>`;
-        }
-
-        const estadoFila = (res.permitido && tipo_evento === 'entrada') ? 'adentro' : 'afuera';
-
-        const horaEntrada = (tipo_evento === 'entrada' && res.permitido) ? ahora : '-';
-        const horaSalida  = (tipo_evento === 'salida')
-            ? (res.permitido ? ahora : `<span class="text-danger fw-bold">${ahora} (Intento)</span>`)
-            : '-';
-
-        const tr = document.createElement('tr');
-        if (clsRow) tr.className = clsRow;
-        tr.dataset.matricula = res.matricula;
-        tr.dataset.estado    = estadoFila;
-
-        tr.innerHTML = `
-            <td>${res.nombre ?? '-'}</td>
-            <td>${res.id_nivel == 1 ? 'Alumno (Preparatoria)' : 'Alumno (Universidad)'}</td>
-            <td>${res.matricula}</td>
-            <td>${badgeEstado}</td>
-            <td>${horaEntrada}</td>
-            <td>${horaSalida}</td>
-            <td>${badgeAcceso}</td>
-        `;
-
-        // Insertar al inicio de la tabla para mostrar el más reciente primero
-        tablaBody.insertBefore(tr, tablaBody.firstChild);
-
-        if (!res.permitido) {
-            alert(`⛔ ${res.mensaje}`);
+    // ── Renderizar estadísticas ───────────────────────────────────────────────
+    function renderStats(stats) {
+        const ids = { adentro: 'stat_adentro', entradas: 'stat_entradas', denegados: 'stat_denegados', salidas: 'stat_salidas' };
+        for (const [key, id] of Object.entries(ids)) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = stats[key] ?? 0;
         }
     }
+
+    // ── Búsqueda (filtra los datos ya cargados) ───────────────────────────────
+    formBusqueda.addEventListener('submit', (e) => {
+        e.preventDefault();
+        cargarDatos();
+    });
+
+    // ── Auto-refresh cada 10 segundos ─────────────────────────────────────────
+    cargarDatos();
+    intervalo = setInterval(cargarDatos, 10000);
+
+    // Limpiar intervalo al salir de la página
+    window.addEventListener('beforeunload', () => clearInterval(intervalo));
 });
