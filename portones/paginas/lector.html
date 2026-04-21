@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Lector QR - Acceso</title>
+    <style>
+        #video-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+        #video { width: 100%; display: block; }
+        #canvas-scan { display: none; }
+        .scan-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none;
+        }
+        .scan-frame {
+            width: 60%; aspect-ratio: 1;
+            border: 3px solid rgba(255,255,255,0.8);
+            border-radius: 8px;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+        }
+        /* Overlay de resultado */
+        #resultado-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 9999;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        #resultado-overlay.concedido { background: #16a34a; }
+        #resultado-overlay.denegado  { background: #dc2626; }
+        #resultado-overlay .icono { font-size: 6rem; line-height: 1; }
+        #resultado-overlay .msg   { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 16px; text-align: center; padding: 0 20px; }
+        #resultado-overlay .sub   { font-size: 1rem; color: rgba(255,255,255,0.85); margin-top: 8px; text-align: center; padding: 0 20px; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    </style>
+</head>
+<body class="bg-dark d-flex flex-column min-vh-100">
+
+<!-- Overlay de resultado (verde/rojo) -->
+<div id="resultado-overlay">
+    <div class="icono" id="res-icono">✅</div>
+    <div class="msg"   id="res-msg">Acceso Concedido</div>
+    <div class="sub"   id="res-sub"></div>
+</div>
+
+<div class="container py-4 flex-grow-1">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="text-white mb-0">📷 Lector de Acceso QR</h4>
+        <a href="menu.html" class="btn btn-outline-light btn-sm">Volver</a>
+    </div>
+
+    <div id="video-container">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas-scan"></canvas>
+        <div class="scan-overlay"><div class="scan-frame"></div></div>
+    </div>
+
+    <div class="text-center mt-3">
+        <small class="text-white-50">Apunta la cámara al código QR del usuario</small>
+    </div>
+
+    <!-- Entrada manual como respaldo -->
+    <div class="mt-4 mx-auto" style="max-width:420px;">
+        <div class="input-group">
+            <input type="text" class="form-control" id="input_manual"
+                placeholder="Matrícula o token ITLA-XXXXXX (manual)">
+            <button class="btn btn-outline-light" id="btn_manual">Verificar</button>
+        </div>
+        <div class="d-flex gap-2 mt-2 justify-content-center">
+            <button class="btn btn-outline-secondary btn-sm" id="btn_tipo_entrada">▶ Entrada</button>
+            <button class="btn btn-outline-secondary btn-sm" id="btn_tipo_salida">◀ Salida</button>
+        </div>
+        <div class="text-center mt-1">
+            <small class="text-white-50">Modo actual: <strong class="text-white" id="lbl_modo">Entrada</strong></small>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-black text-white-50 text-center py-2">
+    <small>© 2026 ITLA - Sistema de Acceso Escolar Institucional</small>
+</footer>
+
+<!-- jsQR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/lector.js"></script>
+</body>
+</html>

@@ -1,45 +1,35 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Funcionalidad para el botón del Reporte Diario
-    const btnReporteDiario = document.getElementById('btnReporteDiario');
-    if (btnReporteDiario) {
-        btnReporteDiario.addEventListener('click', () => {
-            const hoy = new Date().toLocaleDateString();
-            alert(`Simulación: Ejecutando consulta SQL en AWS:\n\nSELECT * FROM asistencia WHERE fecha = '${hoy}' AND tipo_registro = 'entrada';\n\nGenerando reporte en pantalla...`);
-        });
-    }
+document.addEventListener('DOMContentLoaded', async () => {
 
-    // Funcionalidad para la ventana Modal de Cambio de Estado
-    const btnGuardarEstado = document.getElementById('btnGuardarEstado');
-    if (btnGuardarEstado) {
-        btnGuardarEstado.addEventListener('click', () => {
-            const matricula = document.getElementById('matBuscada').value;
-            const nuevoEstado = document.getElementById('nuevoEstado').value;
+    const filaEstado    = document.getElementById('fila_estado');
+    const statRegistros = document.getElementById('stat_registros');
 
-            if (!matricula || !nuevoEstado) {
-                alert("Por favor, ingresa la matrícula y selecciona un estado.");
-                return;
-            }
+    // ── Verificar estado del servidor consultando un endpoint real ────────────
+    try {
+        const inicio = Date.now();
+        const res    = await fetch(`${API_URL}/monitoreo.php`);
+        const ms     = Date.now() - inicio;
+        const data   = await res.json();
 
-            // Aquí se enviaría la petición al servidor (api.js)
-            const payload = {
-                matricula: matricula,
-                estado: nuevoEstado
-            };
-            console.log("Datos a enviar para actualizar estado:", payload);
+        const latenciaClase = ms < 200 ? 'text-success' : ms < 600 ? 'text-warning' : 'text-danger';
 
-            // Simulación de éxito
-            alert(`¡Éxito! El estado del alumno con matrícula ${matricula} ha sido actualizado a "${nuevoEstado.toUpperCase()}" en la base de datos.`);
-            
-            // Cerrar el modal (usando la API de Bootstrap)
-            const modalElement = document.getElementById('modalEstado');
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
-            
-            // Limpiar formulario
-            document.getElementById('formCambioEstado').reset();
-        });
+        filaEstado.innerHTML = `
+            <div class="col-md-4">
+                <span class="text-success">🟢 Servidor AWS: Online</span>
+            </div>
+            <div class="col-md-4">
+                <span class="${latenciaClase}">
+                    ${ms < 600 ? '🟢' : '🟡'} BD control_escolar: Latencia ${ms}ms
+                </span>
+            </div>
+            <div class="col-md-4">
+                <span class="text-secondary">Total Registros Hoy: ${data.registros?.length ?? '–'}</span>
+            </div>
+        `;
+
+    } catch {
+        filaEstado.innerHTML = `
+            <div class="col-12 text-center">
+                <span class="text-danger">🔴 No se pudo conectar con el servidor AWS</span>
+            </div>`;
     }
 });
